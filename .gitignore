@@ -3,6 +3,7 @@ data/
 
 # personal to-do lists
 todo.txt
+your_test.py
 
 # vscode settings
 .vscode/
