@@ -1,3 +1,9 @@
+# get rid of massive data folder
+data/
+
+# personal to-do lists
+todo.txt
+
 # vscode settings
 .vscode/
 
