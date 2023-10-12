@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List, Optional
 
 
 class Ball:
@@ -43,12 +43,14 @@ class Ball:
         """
         self.ball_data["bowler"] = self.data["bowler"]
 
-    def get_extras(self) -> None:
+    def get_extras(self, extra_types: Optional[List]) -> None:
         """
         This method will get the extras from the ball data dictionary and add
         them to the ball_data dictionary. If there are no extras, it will
         not add anything.
         """
+        if extra_types is None:
+            extra_types = ["wides", "noballs", "byes", "legbyes", "penalty"]
         try:
             for key, value in self.data["extras"].items():
                 self.ball_data[key] = value
