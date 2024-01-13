@@ -1,0 +1,104 @@
+[
+    {
+        "balls_per_over": 6,
+        "city": "Southampton",
+        "dates": [
+            "2021-05-19",
+            "2021-05-20",
+            "2021-05-21",
+            "2021-05-22"
+        ],
+        "gender": "male",
+        "match_id": "innings_forfeit_match_input",
+        "match_type": "MDM",
+        "teams": [
+            "Hampshire",
+            "Leicestershire"
+        ],
+        "toss": {
+            "decision": "field",
+            "winner": "Leicestershire"
+        },
+        "venue": "The Rose Bowl, Southampton"
+    },
+    {
+        "balls_per_over": 6,
+        "city": "Windhoek",
+        "dates": [
+            "2023-04-27"
+        ],
+        "gender": "female",
+        "match_id": "t20_match_input",
+        "match_type": "T20",
+        "teams": [
+            "Hong Kong",
+            "Uganda"
+        ],
+        "toss": {
+            "decision": "bat",
+            "winner": "Hong Kong"
+        },
+        "venue": "United Cricket Club Ground, Windhoek"
+    },
+    {
+        "balls_per_over": 6,
+        "city": "Melbourne",
+        "dates": [
+            "2002-12-26",
+            "2002-12-27",
+            "2002-12-28",
+            "2002-12-29",
+            "2002-12-30"
+        ],
+        "gender": "male",
+        "match_id": "test_match_input",
+        "match_type": "Test",
+        "teams": [
+            "Australia",
+            "England"
+        ],
+        "toss": {
+            "decision": "bat",
+            "winner": "Australia"
+        },
+        "venue": "Melbourne Cricket Ground"
+    },
+    {
+        "balls_per_over": 5,
+        "city": "Cardiff",
+        "dates": [
+            "2021-08-18"
+        ],
+        "gender": "male",
+        "match_id": "hundred_match_input",
+        "match_type": "T20",
+        "teams": [
+            "London Spirit",
+            "Welsh Fire"
+        ],
+        "toss": {
+            "decision": "field",
+            "winner": "Welsh Fire"
+        },
+        "venue": "Sophia Gardens, Cardiff"
+    },
+    {
+        "balls_per_over": 6,
+        "city": "Darwin",
+        "dates": [
+            "2003-08-06"
+        ],
+        "gender": "male",
+        "match_id": "odi_match_input",
+        "match_type": "ODI",
+        "teams": [
+            "Australia",
+            "Bangladesh"
+        ],
+        "toss": {
+            "decision": "bat",
+            "winner": "Australia"
+        },
+        "venue": "Marrara Cricket Ground, Darwin"
+    }
+]
