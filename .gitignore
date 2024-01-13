@@ -1,9 +1,13 @@
 # get rid of massive data folder
-data/
+input_data/
 
 # personal to-do lists
 todo.txt
+notes.txt
 playground.py
+
+# ruff
+.ruff_cache/
 
 # vscode settings
 .vscode/

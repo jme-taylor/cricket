@@ -1,0 +1,58 @@
+[
+    {
+        "batter": "GS Ballance",
+        "non_striker": "Sikandar Raza",
+        "runs": 4,
+        "batter_runs": 4,
+        "extras": 0,
+        "bowler": "Shariz Ahmad",
+        "wicket": false,
+        "wicket_count": 0,
+        "over_num": 41,
+        "ball_num_including_extras": 1,
+        "ball_num": 1,
+        "delivery": 41.1
+    },
+    {
+        "batter": "GS Ballance",
+        "non_striker": "Sikandar Raza",
+        "runs": 4,
+        "batter_runs": 4,
+        "extras": 0,
+        "bowler": "Shariz Ahmad",
+        "wicket": false,
+        "wicket_count": 0,
+        "over_num": 41,
+        "ball_num_including_extras": 2,
+        "ball_num": 2,
+        "delivery": 41.2
+    },
+    {
+        "batter": "GS Ballance",
+        "non_striker": "Sikandar Raza",
+        "runs": 1,
+        "batter_runs": 1,
+        "extras": 0,
+        "bowler": "Shariz Ahmad",
+        "wicket": false,
+        "wicket_count": 0,
+        "over_num": 41,
+        "ball_num_including_extras": 3,
+        "ball_num": 3,
+        "delivery": 41.3
+    },
+    {
+        "batter": "Sikandar Raza",
+        "non_striker": "GS Ballance",
+        "runs": 4,
+        "batter_runs": 4,
+        "extras": 0,
+        "bowler": "Shariz Ahmad",
+        "wicket": false,
+        "wicket_count": 0,
+        "over_num": 41,
+        "ball_num_including_extras": 4,
+        "ball_num": 4,
+        "delivery": 41.4
+    }
+]
