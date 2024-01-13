@@ -22,6 +22,7 @@ class JsonDataProcessor:
     match_metadata_filename : str
         The filename of the output JSON file containing the parsed match metadata. By default, "all_match_metadata.jsonl"
     """
+
     def __init__(
         self,
         data_folder=INPUT_DATA_FOLDER,

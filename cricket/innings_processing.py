@@ -24,6 +24,7 @@ class Innings:
     target: Dict
         The target set for the innings, if it exists. Not supplied in class initialisation.
     """
+
     def __init__(self, innings_data: Dict, innings_num: int):
         self.innings_data = innings_data
         self.innings_num = innings_num
