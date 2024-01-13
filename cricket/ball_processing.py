@@ -4,8 +4,8 @@ from typing import Dict
 class Ball:
     """
     Parse data about a single delivery in a cricket match into a dictionary format.
-    Takes some raw data in dictionary format and can parse various information about this delivery, 
-    such as the runs scored, the batter, the bowler, the extras, and the wickets. It can also produce 
+    Takes some raw data in dictionary format and can parse various information about this delivery,
+    such as the runs scored, the batter, the bowler, the extras, and the wickets. It can also produce
     a dictionary of this information.
 
     Attributes
