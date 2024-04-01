@@ -1,4 +1,6 @@
-from typing import Dict, List
+from typing import Dict
+
+import polars as pl
 
 from cricket.ball_processing import Ball
 
@@ -26,7 +28,7 @@ class Over:
         self.over_num = over_data["over"]
         self.deliveries = over_data["deliveries"]
 
-    def parse_over_data(self) -> List:
+    def parse_over_data(self) -> pl.DataFrame:
         """
         Parse raw data into ball by ball format for an over.
 
@@ -37,24 +39,28 @@ class Over:
         """
         ball_num = 1
         ball_num_including_extras = 1
-        over_data = []
+        over_data = pl.DataFrame()
         for delivery in self.deliveries:
+            over_float = f"{self.over_num}.{ball_num}"
             ball = Ball(
                 delivery,
             )
-            ball.get_ball_data()
-            delivery_data = ball.ball_data
-            delivery_data["over_num"] = self.over_num
-            delivery_data[
-                "ball_num_including_extras"
-            ] = ball_num_including_extras
-            delivery_data["ball_num"] = ball_num
-            over_float = f"{self.over_num}.{ball_num}"
-            delivery_data["delivery"] = float(over_float)
-            if "wides" in ball.ball_data or "noballs" in ball.ball_data:
-                over_data.append(delivery_data)
-            else:
-                over_data.append(delivery_data)
+            ball_data = ball.get_ball_data()
+            ball_data = ball_data.with_columns(
+                [
+                    pl.lit(self.over_num).alias("over_num"),
+                    pl.lit(ball_num_including_extras).alias(
+                        "ball_num_including_extras"
+                    ),
+                    pl.lit(ball_num).alias("ball_num"),
+                    pl.lit(float(over_float)).alias("delivery"),
+                ]
+            )
+            over_data = pl.concat([over_data, ball_data], how="diagonal")
+            if (
+                ball_data["wides"].sum() == 0
+                and ball_data["noballs"].sum() == 0
+            ):
                 ball_num += 1
             ball_num_including_extras += 1
         return over_data
