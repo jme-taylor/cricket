@@ -1,4 +1,7 @@
+import datetime
 from typing import Dict, List, Optional
+
+import polars as pl
 
 from cricket.data_processing import load_json
 from cricket.innings_processing import Innings
@@ -34,7 +37,7 @@ class Match:
         """
         return self.player_registry.get(player_name, None)
 
-    def get_match_metadata(self) -> Dict:
+    def get_match_metadata(self) -> pl.DataFrame:
         """
         Get the match metadata from the match data. This will return a dictionary containing the metadata
         for the match in question. This will include the match ID, match type, city, venue, balls per over,
@@ -63,16 +66,25 @@ class Match:
         match_metadata["gender"] = self.match_data.get("info", {}).get(
             "gender", None
         )
-        match_metadata["dates"] = self.match_data.get("info", {}).get(
-            "dates", None
-        )
-        match_metadata["teams"] = self.match_data.get("info", {}).get(
-            "teams", None
-        )
-        match_metadata["toss"] = self.match_data.get("info", {}).get(
-            "toss", None
-        )
-        return match_metadata
+        dates = self.match_data.get("info", {}).get("dates", [])
+        dates_parsed = [
+            datetime.datetime.strptime(date, "%Y-%m-%d") for date in dates
+        ]
+        match_metadata["start_date"] = min(dates_parsed).strftime("%Y-%m-%d")
+        match_metadata["end_date"] = max(dates_parsed).strftime("%Y-%m-%d")
+        teams = self.match_data.get("info", {}).get("teams", [])
+        try:
+            match_metadata["team_1"] = teams[0]
+        except IndexError:
+            match_metadata["team_1"] = None
+        try:
+            match_metadata["team_2"] = teams[1]
+        except IndexError:
+            match_metadata["team_2"] = None
+        toss = self.match_data.get("info", {}).get("toss", {})
+        match_metadata["toss_winner"] = toss.get("winner", None)
+        match_metadata["toss_decision"] = toss.get("decision", None)
+        return pl.from_dict(match_metadata)
 
     def parse_match_data(self) -> List[Dict]:
         """
@@ -83,7 +95,7 @@ class Match:
         List[Dict]
             A list of dictionaries, each representing a ball in the match.
         """
-        innings_data = []
+        match_data = pl.DataFrame()
         for innings_num, innings_raw in enumerate(self.match_data["innings"]):
             innings = Innings(
                 innings_raw,
@@ -93,10 +105,28 @@ class Match:
 
             if forfeit:
                 continue
-            innings_data.extend(innings.parse_innings_data())
-        for ball in innings_data:
-            ball["match_id"] = self.match_id
-            ball["batter_id"] = self.lookup_player(ball["batter"])
-            ball["non_striker_id"] = self.lookup_player(ball["non_striker"])
-            ball["bowler_id"] = self.lookup_player(ball["bowler"])
-        return innings_data
+            match_data = pl.concat(
+                [match_data, innings.parse_innings_data()], how="diagonal"
+            )
+
+        match_data = match_data.with_columns(
+            pl.lit(self.match_id).alias("match_id")
+        )
+        return match_data
+
+
+from cricket.constants import PROJECT_ROOT
+
+DATA_DIR = PROJECT_ROOT.joinpath("tests").joinpath("test_match_processing")
+
+test_match = Match(
+    DATA_DIR.joinpath("innings_forfeit_match_input.json"), match_id=5
+)
+test_match_data = test_match.parse_match_data()
+test_match_data.write_parquet(
+    DATA_DIR.joinpath("innings_forfeit_match_output.parquet")
+)
+test_match_metadata = test_match.get_match_metadata()
+test_match_metadata.write_parquet(
+    DATA_DIR.joinpath("innings_forfeit_match_metadata.parquet")
+)
