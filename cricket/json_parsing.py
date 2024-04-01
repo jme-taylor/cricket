@@ -44,7 +44,7 @@ class JsonDataProcessor:
         all_matches = list(self.data_folder.glob("*.json"))
         logger.info(f"Found {len(all_matches)} matches")
         count_parsed = 0
-        for match_file in all_matches:
+        for match_file in all_matches[:1000]:
             try:
                 match = Match(match_file, match_file.stem)
                 match_data = pl.concat(
@@ -62,6 +62,7 @@ class JsonDataProcessor:
 
         if self.output_folder.exists() is False:
             self.output_folder.mkdir(parents=True)
+        print(match_data.head())
         match_data.write_parquet(
             self.output_folder.joinpath(self.ball_by_ball_filename)
         )
