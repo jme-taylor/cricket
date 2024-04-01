@@ -1,5 +1,5 @@
 import datetime
-from typing import Dict, List, Optional
+from typing import Optional
 
 import polars as pl
 
@@ -86,7 +86,7 @@ class Match:
         match_metadata["toss_decision"] = toss.get("decision", None)
         return pl.from_dict(match_metadata)
 
-    def parse_match_data(self) -> List[Dict]:
+    def parse_match_data(self) -> pl.DataFrame:
         """
         Parse the match data into a list of dictionaries, each representing a ball in the match.
 
@@ -113,20 +113,3 @@ class Match:
             pl.lit(self.match_id).alias("match_id")
         )
         return match_data
-
-
-from cricket.constants import PROJECT_ROOT
-
-DATA_DIR = PROJECT_ROOT.joinpath("tests").joinpath("test_match_processing")
-
-test_match = Match(
-    DATA_DIR.joinpath("innings_forfeit_match_input.json"), match_id=5
-)
-test_match_data = test_match.parse_match_data()
-test_match_data.write_parquet(
-    DATA_DIR.joinpath("innings_forfeit_match_output.parquet")
-)
-test_match_metadata = test_match.get_match_metadata()
-test_match_metadata.write_parquet(
-    DATA_DIR.joinpath("innings_forfeit_match_metadata.parquet")
-)

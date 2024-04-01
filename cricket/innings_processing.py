@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict
 
 import polars as pl
 
@@ -82,7 +82,7 @@ class Innings:
                 ]
             )
 
-    def parse_innings_data(self) -> List:
+    def parse_innings_data(self) -> pl.DataFrame:
         """
         Parse the raw innings data into a list of ball dictionaries.
 
