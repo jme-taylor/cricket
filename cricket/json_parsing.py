@@ -1,4 +1,4 @@
-import json
+import polars as pl
 
 from cricket.constants import DATA_FOLDER, INPUT_DATA_FOLDER
 from cricket.logging_config import logger
@@ -27,8 +27,8 @@ class JsonDataProcessor:
         self,
         data_folder=INPUT_DATA_FOLDER,
         output_folder=DATA_FOLDER,
-        ball_by_ball_filename="all_ball_by_ball.jsonl",
-        match_metadata_filename="all_match_metadata.jsonl",
+        ball_by_ball_filename="ball_by_ball.parquet",
+        match_metadata_filename="match_metadata.parquet",
     ):
         self.data_folder = data_folder
         self.output_folder = output_folder
@@ -39,26 +39,32 @@ class JsonDataProcessor:
         """
         Parse all matches in the data folder, saving ball by ball data, and match metadata.
         """
-        matches = []
-        match_metadata = []
+        match_data = pl.DataFrame()
+        match_metadata = pl.DataFrame()
         all_matches = list(self.data_folder.glob("*.json"))
         logger.info(f"Found {len(all_matches)} matches")
         count_parsed = 0
         for match_file in all_matches:
-            match = Match(match_file, match_file.stem)
-            matches.append(match.parse_match_data())
-            match_metadata.append(match.get_match_metadata())
-            count_parsed += 1
-            if count_parsed % 100 == 0:
-                logger.info(f"Parsed {count_parsed} matches")
+            try:
+                match = Match(match_file, match_file.stem)
+                match_data = pl.concat(
+                    [match_data, match.parse_match_data()], how="diagonal"
+                )
+                match_metadata = pl.concat(
+                    [match_metadata, match.get_match_metadata()],
+                    how="diagonal",
+                )
+                count_parsed += 1
+                if count_parsed % 100 == 0:
+                    logger.info(f"Parsed {count_parsed} matches")
+            except Exception as e:
+                logger.error(f"Error parsing match {match_file}: {e}")
 
         if self.output_folder.exists() is False:
             self.output_folder.mkdir(parents=True)
-        with open(
-            self.output_folder.joinpath(self.ball_by_ball_filename), "w"
-        ) as f:
-            json.dump(matches, f, indent=4, sort_keys=True)
-        with open(
-            self.output_folder.joinpath(self.match_metadata_filename), "w"
-        ) as f:
-            json.dump(match_metadata, f, indent=4, sort_keys=True)
+        match_data.write_parquet(
+            self.output_folder.joinpath(self.ball_by_ball_filename)
+        )
+        match_metadata.write_parquet(
+            self.output_folder.joinpath(self.match_metadata_filename)
+        )

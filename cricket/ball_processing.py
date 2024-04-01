@@ -1,5 +1,7 @@
 from typing import Dict
 
+import polars as pl
+
 
 class Ball:
     """
@@ -21,54 +23,53 @@ class Ball:
         raw_data: Dict,
     ) -> None:
         self.raw_data = raw_data
-        self.ball_data: Dict = {}
+        self.ball_data = {}
 
-    def get_batter(self) -> None:
+    def get_batter(self) -> Dict:
         """Get the batter and non-striker id for the delivery."""
-        self.ball_data["batter"] = self.raw_data["batter"]
-        self.ball_data["non_striker"] = self.raw_data["non_striker"]
+        return {
+            "batter": self.raw_data["batter"],
+            "non_striker": self.raw_data["non_striker"],
+        }
 
-    def get_runs(self) -> None:
+    def get_runs(self) -> Dict:
         """Get the runs scored, batter runs and runs from extras"""
-        self.ball_data["runs"] = self.raw_data["runs"]["total"]
-        self.ball_data["batter_runs"] = self.raw_data["runs"]["batter"]
-        self.ball_data["extras"] = self.raw_data["runs"]["extras"]
+        return {
+            "runs": self.raw_data["runs"]["total"],
+            "batter_runs": self.raw_data["runs"]["batter"],
+            "extras": self.raw_data["runs"]["extras"],
+        }
 
-    def get_bowler(self) -> None:
+    def get_bowler(self) -> Dict:
         """Get the boweler id for the delivery."""
-        self.ball_data["bowler"] = self.raw_data["bowler"]
+        return {"bowler": self.raw_data["bowler"]}
 
-    def get_extras(self) -> None:
+    def get_extras(self) -> Dict:
         """Get the specific extras from the delivery, if they exist"""
-        try:
-            for key, value in self.raw_data["extras"].items():
-                self.ball_data[key] = value
-        except KeyError:
-            pass
+        extras_types = ["wides", "noballs", "byes", "legbyes", "penalty"]
+        return {
+            extra: self.raw_data.get("extras", {}).get(extra, 0)
+            for extra in extras_types
+        }
 
-    def parse_wicket(self, wicket: Dict, wicket_num: int) -> Dict:
-        """Parse all wickets from the delivery into a dictionary format."""
-        parsed_wicket = {}
-        parsed_wicket[f"player_out_{wicket_num}"] = wicket["player_out"]
-        parsed_wicket[f"kind_{wicket_num}"] = wicket["kind"]
-        return parsed_wicket
+    def get_wickets(self) -> Dict:
+        wicket_data = {}
+        wickets = self.raw_data.get("wickets", [])
+        for i in [0, 1]:
+            try:
+                wicket_data[f"player_out_{i + 1}"] = wickets[i]["player_out"]
+                wicket_data[f"kind_{i + 1}"] = wickets[i]["kind"]
+            except IndexError:
+                wicket_data[f"player_out_{i + 1}"] = ""
+                wicket_data[f"kind_{i + 1}"] = ""
+        return wicket_data
 
-    def get_wickets(self) -> None:
-        if "wickets" in self.raw_data:
-            self.ball_data["wicket"] = True
-            self.ball_data["wicket_count"] = len(self.raw_data["wickets"])
-            for wicket_num, wicket in enumerate(self.raw_data["wickets"]):
-                parsed_wicket = self.parse_wicket(wicket, wicket_num)
-                self.ball_data.update(parsed_wicket)
-        else:
-            self.ball_data["wicket"] = False
-            self.ball_data["wicket_count"] = 0
-
-    def get_ball_data(self) -> Dict:
+    def get_ball_data(self) -> pl.DataFrame:
         """Combine all the parsed data into a single dictionary, and return it."""
-        self.get_batter()
-        self.get_runs()
-        self.get_bowler()
-        self.get_extras()
-        self.get_wickets()
-        return self.ball_data
+        # initialise  polars df - then fill it with the stuff that comes back
+        self.ball_data.update(self.get_batter())
+        self.ball_data.update(self.get_runs())
+        self.ball_data.update(self.get_bowler())
+        self.ball_data.update(self.get_extras())
+        self.ball_data.update(self.get_wickets())
+        return pl.from_dict(self.ball_data)
