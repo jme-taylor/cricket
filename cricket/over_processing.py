@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict
 
 import polars as pl
 
@@ -28,7 +28,7 @@ class Over:
         self.over_num = over_data["over"]
         self.deliveries = over_data["deliveries"]
 
-    def parse_over_data(self) -> List:
+    def parse_over_data(self) -> pl.DataFrame:
         """
         Parse raw data into ball by ball format for an over.
 
