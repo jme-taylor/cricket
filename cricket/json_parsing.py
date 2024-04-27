@@ -1,5 +1,7 @@
 import json
 
+import polars as pl
+
 from cricket.constants import DATA_FOLDER, INPUT_DATA_FOLDER
 from cricket.logging_config import logger
 from cricket.match_processing import Match
@@ -27,8 +29,8 @@ class JsonDataProcessor:
         self,
         data_folder=INPUT_DATA_FOLDER,
         output_folder=DATA_FOLDER,
-        ball_by_ball_filename="all_ball_by_ball.jsonl",
-        match_metadata_filename="all_match_metadata.jsonl",
+        ball_by_ball_filename="ball_level_data.parquet",
+        match_metadata_filename="match_metadata.parquet",
     ):
         self.data_folder = data_folder
         self.output_folder = output_folder
@@ -44,21 +46,20 @@ class JsonDataProcessor:
         all_matches = list(self.data_folder.glob("*.json"))
         logger.info(f"Found {len(all_matches)} matches")
         count_parsed = 0
-        for match_file in all_matches:
+        for match_file in all_matches[:10]:
             match = Match(match_file, match_file.stem)
-            matches.append(match.parse_match_data())
-            match_metadata.append(match.get_match_metadata())
+            matches.extend(match.parse_match_data())
+            match_metadata.extend(match.get_match_metadata())
             count_parsed += 1
             if count_parsed % 100 == 0:
                 logger.info(f"Parsed {count_parsed} matches")
 
         if self.output_folder.exists() is False:
             self.output_folder.mkdir(parents=True)
-        with open(
-            self.output_folder.joinpath(self.ball_by_ball_filename), "w"
-        ) as f:
-            json.dump(matches, f, indent=4, sort_keys=True)
-        with open(
-            self.output_folder.joinpath(self.match_metadata_filename), "w"
-        ) as f:
-            json.dump(match_metadata, f, indent=4, sort_keys=True)
+        
+        if len(matches) != 0:
+            match_dataframe = pl.from_dicts(matches)
+            match_dataframe.write_parquet(self.output_folder.joinpath(self.ball_by_ball_filename))
+
+            match_metadata_dataframe = pl.from_dicts(match_metadata)
+            match_metadata_dataframe.write_parquet(self.output_folder.joinpath(self.match_metadata_filename))

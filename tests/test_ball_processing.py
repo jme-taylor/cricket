@@ -100,180 +100,169 @@ def penalty():
     )
 
 
-def test_get_batsman(
+def test_get_batter(
     non_scoring_ball, wicket_ball, wide_ball, no_ball, leg_bye, bye, penalty
 ):
-    non_scoring_ball.get_batter()
-    assert non_scoring_ball.ball_data["batter"] == "JL Langer"
-    assert non_scoring_ball.ball_data["non_striker"] == "ML Hayden"
-    wicket_ball.get_batter()
-    assert wicket_ball.ball_data["batter"] == "N Hussain"
-    assert wicket_ball.ball_data["non_striker"] == "JP Crawley"
-    wide_ball.get_batter()
-    assert wide_ball.ball_data["batter"] == "MP Vaughan"
-    assert wide_ball.ball_data["non_striker"] == "RWT Key"
-    no_ball.get_batter()
-    assert no_ball.ball_data["batter"] == "ML Hayden"
-    assert no_ball.ball_data["non_striker"] == "JL Langer"
-    leg_bye.get_batter()
-    assert leg_bye.ball_data["batter"] == "ML Hayden"
-    assert leg_bye.ball_data["non_striker"] == "JL Langer"
-    bye.get_batter()
-    assert bye.ball_data["batter"] == "ME Trescothick"
-    assert bye.ball_data["non_striker"] == "MA Butcher"
-    penalty.get_batter()
-    assert penalty.ball_data["batter"] == "Habibul Bashar"
-    assert penalty.ball_data["non_striker"] == "Hannan Sarkar"
+    non_scoring_batter_info = non_scoring_ball.get_batter()
+    assert non_scoring_batter_info["batter"] == "JL Langer"
+    assert non_scoring_batter_info["non_striker"] == "ML Hayden"
+    wicket_batter_info = wicket_ball.get_batter()
+    assert wicket_batter_info["batter"] == "N Hussain"
+    assert wicket_batter_info["non_striker"] == "JP Crawley"
+    wide_ball_batter_info = wide_ball.get_batter()
+    assert wide_ball_batter_info["batter"] == "MP Vaughan"
+    assert wide_ball_batter_info["non_striker"] == "RWT Key"
+    no_ball_batter_info = no_ball.get_batter()
+    assert no_ball_batter_info["batter"] == "ML Hayden"
+    assert no_ball_batter_info["non_striker"] == "JL Langer"
+    leg_bye_batter_info = leg_bye.get_batter()
+    assert leg_bye_batter_info["batter"] == "ML Hayden"
+    assert leg_bye_batter_info["non_striker"] == "JL Langer"
+    bye_batter_info = bye.get_batter()
+    assert bye_batter_info["batter"] == "ME Trescothick"
+    assert bye_batter_info["non_striker"] == "MA Butcher"
+    penalty_batter_info = penalty.get_batter()
+    assert penalty_batter_info["batter"] == "Habibul Bashar"
+    assert penalty_batter_info["non_striker"] == "Hannan Sarkar"
 
 
 def test_get_runs(
     non_scoring_ball, wicket_ball, wide_ball, no_ball, leg_bye, bye, penalty
 ):
-    non_scoring_ball.get_runs()
-    assert non_scoring_ball.ball_data["runs"] == 0
-    assert non_scoring_ball.ball_data["batter_runs"] == 0
-    assert non_scoring_ball.ball_data["extras"] == 0
-    wicket_ball.get_runs()
-    assert wicket_ball.ball_data["runs"] == 0
-    assert wicket_ball.ball_data["batter_runs"] == 0
-    assert wicket_ball.ball_data["extras"] == 0
-    wide_ball.get_runs()
-    assert wide_ball.ball_data["runs"] == 1
-    assert wide_ball.ball_data["batter_runs"] == 0
-    assert wide_ball.ball_data["extras"] == 1
-    no_ball.get_runs()
-    assert no_ball.ball_data["runs"] == 1
-    assert no_ball.ball_data["batter_runs"] == 0
-    assert no_ball.ball_data["extras"] == 1
-    leg_bye.get_runs()
-    assert leg_bye.ball_data["runs"] == 1
-    assert leg_bye.ball_data["batter_runs"] == 0
-    assert leg_bye.ball_data["extras"] == 1
-    bye.get_runs()
-    assert bye.ball_data["runs"] == 2
-    assert bye.ball_data["batter_runs"] == 0
-    assert bye.ball_data["extras"] == 2
-    penalty.get_runs()
-    assert penalty.ball_data["runs"] == 5
-    assert penalty.ball_data["batter_runs"] == 0
-    assert penalty.ball_data["extras"] == 5
+    non_scoring_run_info = non_scoring_ball.get_runs()
+    assert non_scoring_run_info["runs"] == 0
+    assert non_scoring_run_info["batter_runs"] == 0
+    assert non_scoring_run_info["extras"] == 0
+    wicket_ball_run_info = wicket_ball.get_runs()
+    assert wicket_ball_run_info["runs"] == 0
+    assert wicket_ball_run_info["batter_runs"] == 0
+    assert wicket_ball_run_info["extras"] == 0
+    wide_ball_run_info = wide_ball.get_runs()
+    assert wide_ball_run_info["runs"] == 1
+    assert wide_ball_run_info["batter_runs"] == 0
+    assert wide_ball_run_info["extras"] == 1
+    no_ball_run_info = no_ball.get_runs()
+    assert no_ball_run_info["runs"] == 1
+    assert no_ball_run_info["batter_runs"] == 0
+    assert no_ball_run_info["extras"] == 1
+    leg_bye_run_info = leg_bye.get_runs()
+    assert leg_bye_run_info["runs"] == 1
+    assert leg_bye_run_info["batter_runs"] == 0
+    assert leg_bye_run_info["extras"] == 1
+    bye_run_info = bye.get_runs()
+    assert bye_run_info["runs"] == 2
+    assert bye_run_info["batter_runs"] == 0
+    assert bye_run_info["extras"] == 2
+    penalty_run_info = penalty.get_runs()
+    assert penalty_run_info["runs"] == 5
+    assert penalty_run_info["batter_runs"] == 0
+    assert penalty_run_info["extras"] == 5
 
 
 def test_get_bowler(
     non_scoring_ball, wicket_ball, wide_ball, no_ball, leg_bye, bye, penalty
 ):
-    non_scoring_ball.get_bowler()
-    assert non_scoring_ball.ball_data["bowler"] == "AR Caddick"
-    wicket_ball.get_bowler()
-    assert wicket_ball.ball_data["bowler"] == "SCG MacGill"
-    wide_ball.get_bowler()
-    assert wide_ball.ball_data["bowler"] == "B Lee"
-    no_ball.get_bowler()
-    assert no_ball.ball_data["bowler"] == "C White"
-    leg_bye.get_bowler()
-    assert leg_bye.ball_data["bowler"] == "AR Caddick"
-    bye.get_bowler()
-    assert bye.ball_data["bowler"] == "SCG MacGill"
-    penalty.get_bowler()
-    assert penalty.ball_data["bowler"] == "MJ Hoggard"
+    non_scoring_bowler_info = non_scoring_ball.get_bowler()
+    assert non_scoring_bowler_info["bowler"] == "AR Caddick"
+    wicket_bowler_info = wicket_ball.get_bowler()
+    assert wicket_bowler_info["bowler"] == "SCG MacGill"
+    wide_bowler_info = wide_ball.get_bowler()
+    assert wide_bowler_info["bowler"] == "B Lee"
+    no_ball_bowler_info = no_ball.get_bowler()
+    assert no_ball_bowler_info["bowler"] == "C White"
+    leg_bye_bowler_info = leg_bye.get_bowler()
+    assert leg_bye_bowler_info["bowler"] == "AR Caddick"
+    bye_bowler_info = bye.get_bowler()
+    assert bye_bowler_info["bowler"] == "SCG MacGill"
+    penalty_bowler = penalty.get_bowler()
+    assert penalty_bowler["bowler"] == "MJ Hoggard"
 
 
 def test_get_extras(
     non_scoring_ball, wicket_ball, wide_ball, no_ball, leg_bye, bye, penalty
 ):
-    non_scoring_ball.get_extras()
-    assert non_scoring_ball.ball_data == {}
-    with pytest.raises(KeyError):
-        assert non_scoring_ball.ball_data["wides"] == 0
-        assert non_scoring_ball.ball_data["noballs"] == 0
-        assert non_scoring_ball.ball_data["legbyes"] == 0
-        assert non_scoring_ball.ball_data["penalty"] == 0
-        assert non_scoring_ball.ball_data["byes"] == 0
-    wicket_ball.get_extras()
-    assert wicket_ball.ball_data == {}
-    with pytest.raises(KeyError):
-        assert wicket_ball.ball_data["wides"] == 0
-        assert wicket_ball.ball_data["noballs"] == 0
-        assert wicket_ball.ball_data["legbyes"] == 0
-        assert wicket_ball.ball_data["penalty"] == 0
-        assert wicket_ball.ball_data["byes"] == 0
-    wide_ball.get_extras()
-    assert wide_ball.ball_data["wides"] == 1
-    with pytest.raises(KeyError):
-        assert wide_ball.ball_data["noballs"] == 0
-        assert wide_ball.ball_data["legbyes"] == 0
-        assert wide_ball.ball_data["penalty"] == 0
-        assert wide_ball.ball_data["byes"] == 0
-    no_ball.get_extras()
-    assert no_ball.ball_data["noballs"] == 1
-    with pytest.raises(KeyError):
-        assert no_ball.ball_data["wides"] == 0
-        assert no_ball.ball_data["legbyes"] == 0
-        assert no_ball.ball_data["penalty"] == 0
-        assert no_ball.ball_data["byes"] == 0
-    leg_bye.get_extras()
-    assert leg_bye.ball_data["legbyes"] == 1
-    with pytest.raises(KeyError):
-        assert leg_bye.ball_data["noballs"] == 0
-        assert leg_bye.ball_data["wides"] == 0
-        assert leg_bye.ball_data["penalty"] == 0
-        assert leg_bye.ball_data["byes"] == 0
-    bye.get_extras()
-    assert bye.ball_data["byes"] == 2
-    with pytest.raises(KeyError):
-        assert bye.ball_data["noballs"] == 0
-        assert bye.ball_data["wides"] == 0
-        assert bye.ball_data["legbyes"] == 0
-        assert bye.ball_data["penalty"] == 0
-    penalty.get_extras()
-    assert penalty.ball_data["penalty"] == 5
-    with pytest.raises(KeyError):
-        assert penalty.ball_data["noballs"] == 0
-        assert penalty.ball_data["wides"] == 0
-        assert penalty.ball_data["legbyes"] == 0
-        assert penalty.ball_data["byes"] == 0
+    non_scoring_extras = non_scoring_ball.get_extras()
+    assert non_scoring_extras["wides"] == 0
+    assert non_scoring_extras["noballs"] == 0
+    assert non_scoring_extras["byes"] == 0
+    assert non_scoring_extras["legbyes"] == 0
+    assert non_scoring_extras["penalty"] == 0
+    wicket_extras = wicket_ball.get_extras()
+    assert wicket_extras["wides"] == 0
+    assert wicket_extras["noballs"] == 0
+    assert wicket_extras["byes"] == 0
+    assert wicket_extras["legbyes"] == 0
+    assert wicket_extras["penalty"] == 0
+    wide_extras = wide_ball.get_extras()
+    assert wide_extras["wides"] == 1
+    assert wide_extras["noballs"] == 0
+    assert wide_extras["byes"] == 0
+    assert wide_extras["legbyes"] == 0
+    assert wide_extras["penalty"] == 0
+    no_ball_extras = no_ball.get_extras()
+    assert no_ball_extras["wides"] == 0
+    assert no_ball_extras["noballs"] == 1
+    assert no_ball_extras["byes"] == 0
+    assert no_ball_extras["legbyes"] == 0
+    assert no_ball_extras["penalty"] == 0
+    leg_bye_extras = leg_bye.get_extras()
+    assert leg_bye_extras["wides"] == 0
+    assert leg_bye_extras["noballs"] == 0
+    assert leg_bye_extras["byes"] == 0
+    assert leg_bye_extras["legbyes"] == 1
+    assert leg_bye_extras["penalty"] == 0
+    bye_extras = bye.get_extras()
+    assert bye_extras["wides"] == 0
+    assert bye_extras["noballs"] == 0
+    assert bye_extras["byes"] == 2
+    assert bye_extras["legbyes"] == 0
+    assert bye_extras["penalty"] == 0
+    penalty_extras = penalty.get_extras()
+    assert penalty_extras["wides"] == 0
+    assert penalty_extras["noballs"] == 0
+    assert penalty_extras["byes"] == 0
+    assert penalty_extras["legbyes"] == 0
+    assert penalty_extras["penalty"] == 5
 
 
 def test_get_wickets(
     non_scoring_ball, wicket_ball, wide_ball, no_ball, leg_bye, bye, penalty
 ):
-    non_scoring_ball.get_wickets()
-    assert non_scoring_ball.ball_data["wicket"] is False
-    assert non_scoring_ball.ball_data["wicket_count"] == 0
-    with pytest.raises(KeyError):
-        assert non_scoring_ball.ball_data["player_out_0"] == "N Hussain"
-    wicket_ball.get_wickets()
-    assert wicket_ball.ball_data["wicket"] is True
-    assert wicket_ball.ball_data["wicket_count"] == 1
-    assert wicket_ball.ball_data["player_out_0"] == "N Hussain"
-    assert wicket_ball.ball_data["kind_0"] == "caught"
-    with pytest.raises(KeyError):
-        assert wicket_ball.ball_data["player_out_1"] == "N Hussain"
-    wide_ball.get_wickets()
-    assert wide_ball.ball_data["wicket"] is False
-    assert wide_ball.ball_data["wicket_count"] == 0
-    with pytest.raises(KeyError):
-        assert wide_ball.ball_data["player_out_0"] == "ML Hayden"
-    no_ball.get_wickets()
-    assert no_ball.ball_data["wicket"] is False
-    assert no_ball.ball_data["wicket_count"] == 0
-    with pytest.raises(KeyError):
-        assert no_ball.ball_data["player_out_0"] == "ML Hayden"
-    leg_bye.get_wickets()
-    assert leg_bye.ball_data["wicket"] is False
-    assert leg_bye.ball_data["wicket_count"] == 0
-    with pytest.raises(KeyError):
-        assert leg_bye.ball_data["player_out_0"] == "ML Hayden"
-    bye.get_wickets()
-    assert bye.ball_data["wicket"] is False
-    assert bye.ball_data["wicket_count"] == 0
-    with pytest.raises(KeyError):
-        assert bye.ball_data["player_out_0"] == "ML Hayden"
-    penalty.get_wickets()
-    assert penalty.ball_data["wicket"] is False
-    assert penalty.ball_data["wicket_count"] == 0
-    with pytest.raises(KeyError):
-        assert penalty.ball_data["player_out_0"] == "ML Hayden"
+    non_scoring_wickets = non_scoring_ball.get_wickets()
+    assert non_scoring_wickets["player_out_1"] == ""
+    assert non_scoring_wickets["kind_1"] == ""
+    assert non_scoring_wickets["player_out_2"] == ""
+    assert non_scoring_wickets["kind_2"] == ""
+    wicket_wickets = wicket_ball.get_wickets()
+    assert wicket_wickets["player_out_1"] == "N Hussain"
+    assert wicket_wickets["kind_1"] == "caught"
+    assert wicket_wickets["player_out_2"] == ""
+    assert wicket_wickets["kind_2"] == ""
+    wide_wickets = wide_ball.get_wickets()
+    assert wide_wickets["player_out_1"] == ""
+    assert wide_wickets["kind_1"] == ""
+    assert wide_wickets["player_out_2"] == ""
+    assert wide_wickets["kind_2"] == ""
+    no_ball_wickets = no_ball.get_wickets()
+    assert no_ball_wickets["player_out_1"] == ""
+    assert no_ball_wickets["kind_1"] == ""
+    assert no_ball_wickets["player_out_2"] == ""
+    assert no_ball_wickets["kind_2"] == ""
+    leg_bye_wickets = leg_bye.get_wickets()
+    assert leg_bye_wickets["player_out_1"] == ""
+    assert leg_bye_wickets["kind_1"] == ""
+    assert leg_bye_wickets["player_out_2"] == ""
+    assert leg_bye_wickets["kind_2"] == ""
+    bye_wickets = bye.get_wickets()
+    assert bye_wickets["player_out_1"] == ""
+    assert bye_wickets["kind_1"] == ""
+    assert bye_wickets["player_out_2"] == ""
+    assert bye_wickets["kind_2"] == ""
+    penalty_wickets = penalty.get_wickets()
+    assert penalty_wickets["player_out_1"] == ""
+    assert penalty_wickets["kind_1"] == ""
+    assert penalty_wickets["player_out_2"] == ""
+    assert penalty_wickets["kind_2"] == ""
 
 
 def test_get_ball_data(
@@ -287,8 +276,15 @@ def test_get_ball_data(
         "batter_runs": 0,
         "extras": 0,
         "bowler": "AR Caddick",
-        "wicket": False,
-        "wicket_count": 0,
+        "wides": 0,
+        "noballs": 0,
+        "byes": 0,
+        "legbyes": 0,
+        "penalty": 0,
+        "player_out_1": "",
+        "kind_1": "",
+        "player_out_2": "",
+        "kind_2": "",
     }
     wicket_ball.get_ball_data()
     assert wicket_ball.ball_data == {
@@ -298,10 +294,15 @@ def test_get_ball_data(
         "batter_runs": 0,
         "extras": 0,
         "bowler": "SCG MacGill",
-        "wicket": True,
-        "wicket_count": 1,
-        "player_out_0": "N Hussain",
-        "kind_0": "caught",
+        "wides": 0,
+        "noballs": 0,
+        "byes": 0,
+        "legbyes": 0,
+        "penalty": 0,
+        "player_out_1": "N Hussain",
+        "kind_1": "caught",
+        "player_out_2": "",
+        "kind_2": "",
     }
     wide_ball.get_ball_data()
     assert wide_ball.ball_data == {
@@ -312,8 +313,14 @@ def test_get_ball_data(
         "extras": 1,
         "bowler": "B Lee",
         "wides": 1,
-        "wicket": False,
-        "wicket_count": 0,
+        "noballs": 0,
+        "byes": 0,
+        "legbyes": 0,
+        "penalty": 0,
+        "player_out_1": "",
+        "kind_1": "",
+        "player_out_2": "",
+        "kind_2": "",
     }
     no_ball.get_ball_data()
     assert no_ball.ball_data == {
@@ -323,9 +330,15 @@ def test_get_ball_data(
         "batter_runs": 0,
         "extras": 1,
         "bowler": "C White",
+        "wides": 0,
         "noballs": 1,
-        "wicket": False,
-        "wicket_count": 0,
+        "byes": 0,
+        "legbyes": 0,
+        "penalty": 0,
+        "player_out_1": "",
+        "kind_1": "",
+        "player_out_2": "",
+        "kind_2": "",
     }
     leg_bye.get_ball_data()
     assert leg_bye.ball_data == {
@@ -335,9 +348,15 @@ def test_get_ball_data(
         "batter_runs": 0,
         "extras": 1,
         "bowler": "AR Caddick",
+        "wides": 0,
+        "noballs": 0,
+        "byes": 0,
         "legbyes": 1,
-        "wicket": False,
-        "wicket_count": 0,
+        "penalty": 0,
+        "player_out_1": "",
+        "kind_1": "",
+        "player_out_2": "",
+        "kind_2": "",
     }
     bye.get_ball_data()
     assert bye.ball_data == {
@@ -347,9 +366,15 @@ def test_get_ball_data(
         "batter_runs": 0,
         "extras": 2,
         "bowler": "SCG MacGill",
+        "wides": 0,
+        "noballs": 0,
         "byes": 2,
-        "wicket": False,
-        "wicket_count": 0,
+        "legbyes": 0,
+        "penalty": 0,
+        "player_out_1": "",
+        "kind_1": "",
+        "player_out_2": "",
+        "kind_2": "",
     }
     penalty.get_ball_data()
     assert penalty.ball_data == {
@@ -359,7 +384,13 @@ def test_get_ball_data(
         "batter_runs": 0,
         "extras": 5,
         "bowler": "MJ Hoggard",
+        "wides": 0,
+        "noballs": 0,
+        "byes": 0,
+        "legbyes": 0,
         "penalty": 5,
-        "wicket": False,
-        "wicket_count": 0,
+        "player_out_1": "",
+        "kind_1": "",
+        "player_out_2": "",
+        "kind_2": "",
     }

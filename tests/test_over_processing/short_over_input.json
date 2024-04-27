@@ -1,0 +1,29 @@
+{
+    "over": 41,
+    "deliveries": [
+        {
+            "batter": "GS Ballance",
+            "bowler": "Shariz Ahmad",
+            "non_striker": "Sikandar Raza",
+            "runs": {"batter": 4, "extras": 0, "total": 4}
+        },
+        {
+            "batter": "GS Ballance",
+            "bowler": "Shariz Ahmad",
+            "non_striker": "Sikandar Raza",
+            "runs": {"batter": 4, "extras": 0, "total": 4}
+        },
+        {
+            "batter": "GS Ballance",
+            "bowler": "Shariz Ahmad",
+            "non_striker": "Sikandar Raza",
+            "runs": {"batter": 1, "extras": 0, "total": 1}
+        },
+        {
+            "batter": "Sikandar Raza",
+            "bowler": "Shariz Ahmad",
+            "non_striker": "GS Ballance",
+            "runs": {"batter": 4, "extras": 0, "total": 4}
+        }
+    ]
+}

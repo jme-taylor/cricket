@@ -5,7 +5,7 @@ import pytest
 
 from cricket.innings_processing import Innings
 
-TEST_DATA_DIR = Path(__file__).parent.joinpath("test_data")
+TEST_DATA_DIR = Path(__file__).parent.joinpath("test_innings_processing")
 
 
 @pytest.fixture
@@ -50,12 +50,12 @@ def test_target_check(
 ):
     ball = {"delivery": 3.2}
     test_innings.target_check(ball)
-    assert ball["target_runs"] is None
-    assert ball["target_overs"] is None
+    assert ball["target_runs"] == 0
+    assert ball["target_overs"] == 0.0
     ball = {"delivery": 2.3}
     test_innings_with_powerplay.target_check(ball)
-    assert ball["target_runs"] is None
-    assert ball["target_overs"] is None
+    assert ball["target_runs"] == 0
+    assert ball["target_overs"] == 0.0
     ball = {"delivery": 10.2}
     test_innings_with_target.target_check(ball)
     assert ball["target_runs"] == 186

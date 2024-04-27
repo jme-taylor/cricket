@@ -42,19 +42,20 @@ class Over:
             ball = Ball(
                 delivery,
             )
-            ball.get_ball_data()
-            delivery_data = ball.ball_data
-            delivery_data["over_num"] = self.over_num
-            delivery_data[
+            ball_data = ball.get_ball_data()
+            ball_data["over_num"] = self.over_num
+            ball_data[
                 "ball_num_including_extras"
             ] = ball_num_including_extras
-            delivery_data["ball_num"] = ball_num
+            ball_data["ball_num"] = ball_num
             over_float = f"{self.over_num}.{ball_num}"
-            delivery_data["delivery"] = float(over_float)
-            if "wides" in ball.ball_data or "noballs" in ball.ball_data:
-                over_data.append(delivery_data)
+            ball_data["delivery"] = float(over_float)
+            wides = ball_data["wides"]
+            no_balls = ball_data["noballs"]
+            if wides > 0 or no_balls > 0:
+                over_data.append(ball_data)
             else:
-                over_data.append(delivery_data)
+                over_data.append(ball_data)
                 ball_num += 1
             ball_num_including_extras += 1
         return over_data

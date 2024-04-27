@@ -1,4 +1,5 @@
-from typing import Dict, List, Optional
+import datetime
+from typing import Dict, List, Optional, Tuple
 
 from cricket.data_processing import load_json
 from cricket.innings_processing import Innings
@@ -33,6 +34,34 @@ class Match:
             String with player ID if there is a match, None if there is no match.
         """
         return self.player_registry.get(player_name, None)
+    
+    def get_match_dates(self) -> Tuple:
+        dates = self.match_data.get("info", {}).get(
+            "dates", None
+        )
+        dates_parsed = [
+            datetime.datetime.strptime(date, "%Y-%m-%d") for date in dates 
+        ]
+        start_date = min(dates_parsed)
+        end_date = max(dates_parsed)
+        return start_date, end_date
+
+    def get_match_teams(self) -> Tuple:
+        teams_raw = self.match_data.get("info", {}).get("teams", [])
+        team_parsed = []
+        for team_num in [0, 1]:
+            try:
+                team = teams_raw[team_num]
+            except IndexError:
+                team = None
+            team_parsed.append(team)
+        return team_parsed[0], team_parsed[1]
+    
+    def get_match_toss(self) -> Tuple:
+        toss_data = self.match_data.get("info", {}).get("toss", {})
+        toss_winner = toss_data.get("winner", None)
+        toss_decision = toss_data.get("decision", None)
+        return toss_winner, toss_decision
 
     def get_match_metadata(self) -> Dict:
         """
@@ -63,16 +92,11 @@ class Match:
         match_metadata["gender"] = self.match_data.get("info", {}).get(
             "gender", None
         )
-        match_metadata["dates"] = self.match_data.get("info", {}).get(
-            "dates", None
-        )
-        match_metadata["teams"] = self.match_data.get("info", {}).get(
-            "teams", None
-        )
-        match_metadata["toss"] = self.match_data.get("info", {}).get(
-            "toss", None
-        )
+        match_metadata["start_date"], match_metadata["end_date"] = self.get_match_dates()
+        match_metadata["team_1"], match_metadata["team_2"] = self.get_match_teams()
+        match_metadata["toss_winner"], match_metadata["toss_decision"] = self.get_match_toss()
         return match_metadata
+    
 
     def parse_match_data(self) -> List[Dict]:
         """
