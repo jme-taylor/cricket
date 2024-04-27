@@ -1,5 +1,3 @@
-import json
-
 import polars as pl
 
 from cricket.constants import DATA_FOLDER, INPUT_DATA_FOLDER
@@ -56,10 +54,14 @@ class JsonDataProcessor:
 
         if self.output_folder.exists() is False:
             self.output_folder.mkdir(parents=True)
-        
+
         if len(matches) != 0:
             match_dataframe = pl.from_dicts(matches)
-            match_dataframe.write_parquet(self.output_folder.joinpath(self.ball_by_ball_filename))
+            match_dataframe.write_parquet(
+                self.output_folder.joinpath(self.ball_by_ball_filename)
+            )
 
             match_metadata_dataframe = pl.from_dicts(match_metadata)
-            match_metadata_dataframe.write_parquet(self.output_folder.joinpath(self.match_metadata_filename))
+            match_metadata_dataframe.write_parquet(
+                self.output_folder.joinpath(self.match_metadata_filename)
+            )
