@@ -21,16 +21,16 @@ class Ball:
         raw_data: Dict,
     ) -> None:
         self.raw_data = raw_data
-        self.ball_data = {}
+        self.ball_data: Dict= {}
 
-    def get_batter(self) -> None:
+    def get_batter(self) -> Dict:
         """Get the batter and non-striker id for the delivery."""
         return {
             "batter": self.raw_data["batter"],
             "non_striker": self.raw_data["non_striker"],
         }
 
-    def get_runs(self) -> None:
+    def get_runs(self) -> Dict:
         """Get the runs scored, batter runs and runs from extras"""
         return {
             "runs": self.raw_data["runs"]["total"],
@@ -38,11 +38,11 @@ class Ball:
             "extras": self.raw_data["runs"]["extras"],
         }
 
-    def get_bowler(self) -> None:
+    def get_bowler(self) -> Dict:
         """Get the boweler id for the delivery."""
         return {"bowler": self.raw_data["bowler"]}
 
-    def get_extras(self) -> None:
+    def get_extras(self) -> Dict:
         """Get the specific extras from the delivery, if they exist"""
         EXTRAS_TYPES = ["wides", "noballs", "byes", "legbyes", "penalty"]
         return {
