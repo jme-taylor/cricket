@@ -104,7 +104,7 @@ class Match:
         ) = self.get_match_toss()
         return match_metadata
 
-    def parse_match_data(self) -> List[Dict]:
+    def parse_match_data(self) -> pl.DataFrame:
         """
         Parse the match data into a list of dictionaries, each representing a ball in the match.
 
@@ -113,7 +113,7 @@ class Match:
         List[Dict]
             A list of dictionaries, each representing a ball in the match.
         """
-        innings_data = []
+        match_data = pl.DataFrame()
         for innings_num, innings_raw in enumerate(self.match_data["innings"]):
             innings = Innings(
                 innings_raw,
@@ -123,10 +123,11 @@ class Match:
 
             if forfeit:
                 continue
-            innings_data.extend(innings.parse_innings_data())
-        for ball in innings_data:
-            ball["match_id"] = self.match_id
-            ball["batter_id"] = self.lookup_player(ball["batter"])
-            ball["non_striker_id"] = self.lookup_player(ball["non_striker"])
-            ball["bowler_id"] = self.lookup_player(ball["bowler"])
-        return innings_data
+            match_data = pl.concat(
+                [match_data, innings.parse_innings_data()], how="diagonal"
+            )
+
+        match_data = match_data.with_columns(
+            pl.lit(self.match_id).alias("match_id")
+        )
+        return match_data

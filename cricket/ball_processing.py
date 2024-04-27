@@ -1,5 +1,7 @@
 from typing import Dict
 
+import polars as pl
+
 
 class Ball:
     """
@@ -24,12 +26,18 @@ class Ball:
         self.ball_data: Dict = {}
 
     def get_batter(self) -> Dict:
+    def get_batter(self) -> Dict:
         """Get the batter and non-striker id for the delivery."""
         return {
             "batter": self.raw_data["batter"],
             "non_striker": self.raw_data["non_striker"],
         }
+        return {
+            "batter": self.raw_data["batter"],
+            "non_striker": self.raw_data["non_striker"],
+        }
 
+    def get_runs(self) -> Dict:
     def get_runs(self) -> Dict:
         """Get the runs scored, batter runs and runs from extras"""
         return {
@@ -37,11 +45,19 @@ class Ball:
             "batter_runs": self.raw_data["runs"]["batter"],
             "extras": self.raw_data["runs"]["extras"],
         }
+        return {
+            "runs": self.raw_data["runs"]["total"],
+            "batter_runs": self.raw_data["runs"]["batter"],
+            "extras": self.raw_data["runs"]["extras"],
+        }
 
+    def get_bowler(self) -> Dict:
     def get_bowler(self) -> Dict:
         """Get the boweler id for the delivery."""
         return {"bowler": self.raw_data["bowler"]}
+        return {"bowler": self.raw_data["bowler"]}
 
+    def get_extras(self) -> Dict:
     def get_extras(self) -> Dict:
         """Get the specific extras from the delivery, if they exist"""
         EXTRAS_TYPES = ["wides", "noballs", "byes", "legbyes", "penalty"]
@@ -66,7 +82,7 @@ class Ball:
                 wicket_data[f"kind_{wicket_number + 1}"] = ""
         return wicket_data
 
-    def get_ball_data(self) -> Dict:
+    def get_ball_data(self) -> pl.DataFrame:
         """Combine all the parsed data into a single dictionary, and return it."""
         self.ball_data.update(self.get_batter())
         self.ball_data.update(self.get_runs())
