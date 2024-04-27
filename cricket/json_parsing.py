@@ -1,5 +1,4 @@
 import polars as pl
-import polars as pl
 
 from cricket.constants import DATA_FOLDER, INPUT_DATA_FOLDER
 from cricket.logging_config import logger
@@ -40,12 +39,12 @@ class JsonDataProcessor:
         """
         Parse all matches in the data folder, saving ball by ball data, and match metadata.
         """
-        match_data = pl.DataFrame()
-        match_metadata = pl.DataFrame()
+        matches = []
+        match_metadata = []
         all_matches = list(self.data_folder.glob("*.json"))
         logger.info(f"Found {len(all_matches)} matches")
         count_parsed = 0
-        for match_file in all_matches[:10]:
+        for match_file in all_matches:
             match = Match(match_file, match_file.stem)
             matches.extend(match.parse_match_data())
             match_metadata.extend(match.get_match_metadata())
