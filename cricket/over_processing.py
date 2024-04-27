@@ -1,6 +1,4 @@
-from typing import Dict
-
-import polars as pl
+from typing import Dict, List
 
 from cricket.ball_processing import Ball
 
@@ -28,7 +26,7 @@ class Over:
         self.over_num = over_data["over"]
         self.deliveries = over_data["deliveries"]
 
-    def parse_over_data(self) -> pl.DataFrame:
+    def parse_over_data(self) -> List:
         """
         Parse raw data into ball by ball format for an over.
 
@@ -39,9 +37,8 @@ class Over:
         """
         ball_num = 1
         ball_num_including_extras = 1
-        over_data = pl.DataFrame()
+        over_data = []
         for delivery in self.deliveries:
-            over_float = f"{self.over_num}.{ball_num}"
             ball = Ball(
                 delivery,
             )
