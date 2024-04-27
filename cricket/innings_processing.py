@@ -62,8 +62,8 @@ class Innings:
             The ball dictionary to add the powerplay information to.
         """
         if self.target is None:
-            ball["target_runs"] = None
-            ball["target_overs"] = None
+            ball["target_runs"] = 0
+            ball["target_overs"] = 0.0
         else:
             ball["target_runs"] = self.target["runs"]
             ball["target_overs"] = self.target["overs"]
