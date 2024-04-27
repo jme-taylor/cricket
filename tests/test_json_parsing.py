@@ -13,11 +13,11 @@ def test_parse_all_matches():
 
     json_data_processor.parse_all_matches()
 
-    ball_by_ball_filepath = (
-        json_data_processor.output_folder.joinpath("ball_level_data.parquet")
+    ball_by_ball_filepath = json_data_processor.output_folder.joinpath(
+        "ball_level_data.parquet"
     )
-    match_metadata_filepath = (
-        json_data_processor.output_folder.joinpath("match_metadata.parquet")
+    match_metadata_filepath = json_data_processor.output_folder.joinpath(
+        "match_metadata.parquet"
     )
 
     assert ball_by_ball_filepath.exists()
@@ -31,11 +31,11 @@ def test_parse_all_matches_no_matches():
     )
     json_data_processor.parse_all_matches()
 
-    ball_by_ball_filepath = (
-        json_data_processor.data_folder.joinpath("ball_level_data.parquet")
+    ball_by_ball_filepath = json_data_processor.data_folder.joinpath(
+        "ball_level_data.parquet"
     )
-    match_metadata_filepath = (
-        json_data_processor.data_folder.joinpath("match_metadata.parquet")
+    match_metadata_filepath = json_data_processor.data_folder.joinpath(
+        "match_metadata.parquet"
     )
 
     assert not ball_by_ball_filepath.exists()
