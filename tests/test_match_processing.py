@@ -2,7 +2,9 @@ import datetime
 import json
 from pathlib import Path
 
+import polars as pl
 import pytest
+from polars.testing import assert_frame_equal
 
 from cricket.match_processing import Match
 
@@ -11,30 +13,28 @@ TEST_DATA_DIR = Path(__file__).parent.joinpath("test_match_processing")
 
 @pytest.fixture
 def test_test_match():
-    return Match(TEST_DATA_DIR.joinpath("test_match_input.json"), match_id=1)
+    return Match(DATA_DIR.joinpath("test_match_input.json"), match_id=1)
 
 
 @pytest.fixture
 def test_odi_match():
-    return Match(TEST_DATA_DIR.joinpath("odi_match_input.json"), match_id=2)
+    return Match(DATA_DIR.joinpath("odi_match_input.json"), match_id=2)
 
 
 @pytest.fixture
 def test_t20_match():
-    return Match(TEST_DATA_DIR.joinpath("t20_match_input.json"), match_id=3)
+    return Match(DATA_DIR.joinpath("t20_match_input.json"), match_id=3)
 
 
 @pytest.fixture
 def test_hundred_match():
-    return Match(
-        TEST_DATA_DIR.joinpath("hundred_match_input.json"), match_id=4
-    )
+    return Match(DATA_DIR.joinpath("hundred_match_input.json"), match_id=4)
 
 
 @pytest.fixture
 def test_forfeitted_match():
     return Match(
-        TEST_DATA_DIR.joinpath("innings_forfeit_match_input.json"), match_id=5
+        DATA_DIR.joinpath("innings_forfeit_match_input.json"), match_id=5
     )
 
 
@@ -129,15 +129,27 @@ def test_parse_match_data(
     test_hundred_match,
     test_forfeitted_match,
 ):
-    with open(TEST_DATA_DIR.joinpath("test_match_output.json")) as f:
-        assert test_test_match.parse_match_data() == json.load(f)
-    with open(TEST_DATA_DIR.joinpath("odi_match_output.json")) as f:
-        assert test_odi_match.parse_match_data() == json.load(f)
-    with open(TEST_DATA_DIR.joinpath("t20_match_output.json")) as f:
-        assert test_t20_match.parse_match_data() == json.load(f)
-    with open(TEST_DATA_DIR.joinpath("hundred_match_output.json")) as f:
-        assert test_hundred_match.parse_match_data() == json.load(f)
-    with open(
-        TEST_DATA_DIR.joinpath("innings_forfeit_match_output.json")
-    ) as f:
-        assert test_forfeitted_match.parse_match_data() == json.load(f)
+    test_match_data = pl.read_parquet(
+        DATA_DIR.joinpath("test_match_output.parquet")
+    )
+    assert_frame_equal(test_test_match.parse_match_data(), test_match_data)
+    odi_match_data = pl.read_parquet(
+        DATA_DIR.joinpath("odi_match_output.parquet")
+    )
+    assert_frame_equal(test_odi_match.parse_match_data(), odi_match_data)
+    t20_match_data = pl.read_parquet(
+        DATA_DIR.joinpath("t20_match_output.parquet")
+    )
+    assert_frame_equal(test_t20_match.parse_match_data(), t20_match_data)
+    hundred_match_data = pl.read_parquet(
+        DATA_DIR.joinpath("hundred_match_output.parquet")
+    )
+    assert_frame_equal(
+        test_hundred_match.parse_match_data(), hundred_match_data
+    )
+    forfeit_match_data = pl.read_parquet(
+        DATA_DIR.joinpath("innings_forfeit_match_output.parquet")
+    )
+    assert_frame_equal(
+        test_forfeitted_match.parse_match_data(), forfeit_match_data
+    )

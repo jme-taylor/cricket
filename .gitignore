@@ -1,5 +1,6 @@
-# get rid of massive data folder
+# get rid of massive input + output data folder
 input_data/
+data/
 
 # personal to-do lists
 todo.txt
