@@ -21,7 +21,7 @@ class Ball:
         raw_data: Dict,
     ) -> None:
         self.raw_data = raw_data
-        self.ball_data: Dict= {}
+        self.ball_data: Dict = {}
 
     def get_batter(self) -> Dict:
         """Get the batter and non-striker id for the delivery."""
