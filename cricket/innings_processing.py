@@ -1,6 +1,4 @@
-from typing import Dict
-
-import polars as pl
+from typing import Dict, List
 
 from cricket.over_processing import Over
 
@@ -33,9 +31,8 @@ class Innings:
         self.team = self.innings_data["team"]
         self.powerplays = self.innings_data.get("powerplays", [])
         self.target = self.innings_data.get("target", None)
-        self.innings_df = pl.DataFrame()
 
-    def power_play_check(self) -> None:
+    def power_play_check(self, ball: Dict) -> None:
         """
         Check if the delivery was in a powerplay and add this information to the ball dictionary.
 
@@ -44,21 +41,18 @@ class Innings:
         ball : Dict
             The ball dictionary to add the powerplay information to.
         """
-        self.innings_df = self.innings_df.with_columns(
-            pl.lit(False).alias("powerplay")
-        )
+        if len(self.powerplays) == 0:
+            ball["powerplay"] = False
         for powerplay in self.powerplays:
-            self.innings_df = self.innings_df.with_columns(
-                pl.when(
-                    (pl.col("delivery") >= powerplay["from"])
-                    & (pl.col("delivery") <= powerplay["to"])
-                )
-                .then(True)
-                .otherwise(False)
-                .alias("powerplay")
-            )
+            if (
+                ball["delivery"] >= powerplay["from"]
+                and ball["delivery"] <= powerplay["to"]
+            ):
+                ball["powerplay"] = True
+            else:
+                ball["powerplay"] = False
 
-    def target_check(self) -> None:
+    def target_check(self, ball: Dict) -> None:
         """
         Check if the delivery was in a powerplay and add this information to the ball dictionary.
 
@@ -68,21 +62,13 @@ class Innings:
             The ball dictionary to add the powerplay information to.
         """
         if self.target is None:
-            self.innings_df = self.innings_df.with_columns(
-                [
-                    pl.lit(0).alias("target_runs"),
-                    pl.lit(0.0).alias("target_overs"),
-                ]
-            )
+            ball["target_runs"] = 0
+            ball["target_overs"] = 0.0
         else:
-            self.innings_df = self.innings_df.with_columns(
-                [
-                    pl.lit(self.target["runs"]).alias("target_runs"),
-                    pl.lit(float(self.target["overs"])).alias("target_overs"),
-                ]
-            )
+            ball["target_runs"] = self.target["runs"]
+            ball["target_overs"] = self.target["overs"]
 
-    def parse_innings_data(self) -> pl.DataFrame:
+    def parse_innings_data(self) -> List:
         """
         Parse the raw innings data into a list of ball dictionaries.
 
@@ -91,19 +77,14 @@ class Innings:
         List
             A list of ball dictionaries containing the parsed data about each delivery in the innings.
         """
+        innings_data = []
         for over_data in self.innings_data["overs"]:
             over = Over(over_data)
-            over_data = over.parse_over_data()
-            self.innings_df = pl.concat(
-                [self.innings_df, over_data], how="diagonal"
-            )
+            innings_data.extend(over.parse_over_data())
 
-        self.innings_df = self.innings_df.with_columns(
-            [
-                pl.lit(self.team).alias("team"),
-                pl.lit(self.innings_num).alias("innings_number"),
-            ]
-        )
-        self.power_play_check()
-        self.target_check()
-        return self.innings_df
+        for ball in innings_data:
+            ball["team"] = self.team
+            ball["innings_number"] = self.innings_num
+            self.power_play_check(ball)
+            self.target_check(ball)
+        return innings_data

@@ -1,6 +1,4 @@
-import polars as pl
 import pytest
-from polars.testing import assert_frame_equal
 
 from cricket.ball_processing import Ball
 
@@ -270,150 +268,129 @@ def test_get_wickets(
 def test_get_ball_data(
     non_scoring_ball, wicket_ball, wide_ball, no_ball, leg_bye, bye, penalty
 ):
-    non_scoring_output = non_scoring_ball.get_ball_data()
-    expected_non_scoring_output = pl.DataFrame(
-        {
-            "batter": ["JL Langer"],
-            "non_striker": ["ML Hayden"],
-            "runs": [0],
-            "batter_runs": [0],
-            "extras": [0],
-            "bowler": ["AR Caddick"],
-            "wides": [0],
-            "noballs": [0],
-            "byes": [0],
-            "legbyes": [0],
-            "penalty": [0],
-            "player_out_1": [""],
-            "kind_1": [""],
-            "player_out_2": [""],
-            "kind_2": [""],
-        }
-    )
-    assert_frame_equal(non_scoring_output, expected_non_scoring_output)
-    wicket_output = wicket_ball.get_ball_data()
-    expected_wicket_output = pl.DataFrame(
-        {
-            "batter": ["N Hussain"],
-            "non_striker": ["JP Crawley"],
-            "runs": [0],
-            "batter_runs": [0],
-            "extras": [0],
-            "bowler": ["SCG MacGill"],
-            "wides": [0],
-            "noballs": [0],
-            "byes": [0],
-            "legbyes": [0],
-            "penalty": [0],
-            "player_out_1": ["N Hussain"],
-            "kind_1": ["caught"],
-            "player_out_2": [""],
-            "kind_2": [""],
-        }
-    )
-    assert_frame_equal(wicket_output, expected_wicket_output)
-    wide_output = wide_ball.get_ball_data()
-    expected_wide_output = pl.DataFrame(
-        {
-            "batter": ["MP Vaughan"],
-            "non_striker": ["RWT Key"],
-            "runs": [1],
-            "batter_runs": [0],
-            "extras": [1],
-            "bowler": ["B Lee"],
-            "wides": [1],
-            "noballs": [0],
-            "byes": [0],
-            "legbyes": [0],
-            "penalty": [0],
-            "player_out_1": [""],
-            "kind_1": [""],
-            "player_out_2": [""],
-            "kind_2": [""],
-        }
-    )
-    assert_frame_equal(wide_output, expected_wide_output)
-    no_ball_output = no_ball.get_ball_data()
-    expected_no_ball_output = pl.DataFrame(
-        {
-            "batter": ["ML Hayden"],
-            "non_striker": ["JL Langer"],
-            "runs": [1],
-            "batter_runs": [0],
-            "extras": [1],
-            "bowler": ["C White"],
-            "wides": [0],
-            "noballs": [1],
-            "byes": [0],
-            "legbyes": [0],
-            "penalty": [0],
-            "player_out_1": [""],
-            "kind_1": [""],
-            "player_out_2": [""],
-            "kind_2": [""],
-        }
-    )
-    assert_frame_equal(no_ball_output, expected_no_ball_output)
-    leg_ball_output = leg_bye.get_ball_data()
-    expected_leg_ball_output = pl.DataFrame(
-        {
-            "batter": ["ML Hayden"],
-            "non_striker": ["JL Langer"],
-            "runs": [1],
-            "batter_runs": [0],
-            "extras": [1],
-            "bowler": ["AR Caddick"],
-            "wides": [0],
-            "noballs": [0],
-            "byes": [0],
-            "legbyes": [1],
-            "penalty": [0],
-            "player_out_1": [""],
-            "kind_1": [""],
-            "player_out_2": [""],
-            "kind_2": [""],
-        }
-    )
-    assert_frame_equal(leg_ball_output, expected_leg_ball_output)
-    bye_output = bye.get_ball_data()
-    expected_bye_output = pl.DataFrame(
-        {
-            "batter": ["ME Trescothick"],
-            "non_striker": ["MA Butcher"],
-            "runs": [2],
-            "batter_runs": [0],
-            "extras": [2],
-            "bowler": ["SCG MacGill"],
-            "wides": [0],
-            "noballs": [0],
-            "byes": [2],
-            "legbyes": [0],
-            "penalty": [0],
-            "player_out_1": [""],
-            "kind_1": [""],
-            "player_out_2": [""],
-            "kind_2": [""],
-        }
-    )
-    assert_frame_equal(bye_output, expected_bye_output)
-    penalty_output = penalty.get_ball_data()
-    expected_penalty_output = pl.DataFrame(
-        {
-            "batter": ["Habibul Bashar"],
-            "non_striker": ["Hannan Sarkar"],
-            "runs": [5],
-            "batter_runs": [0],
-            "extras": [5],
-            "bowler": ["MJ Hoggard"],
-            "wides": [0],
-            "noballs": [0],
-            "byes": [0],
-            "legbyes": [0],
-            "penalty": [5],
-            "player_out_1": [""],
-            "kind_1": [""],
-            "player_out_2": [""],
-            "kind_2": [""],
-        }
-    )
-    assert_frame_equal(penalty_output, expected_penalty_output)
+    non_scoring_ball.get_ball_data()
+    assert non_scoring_ball.ball_data == {
+        "batter": "JL Langer",
+        "non_striker": "ML Hayden",
+        "runs": 0,
+        "batter_runs": 0,
+        "extras": 0,
+        "bowler": "AR Caddick",
+        "wides": 0,
+        "noballs": 0,
+        "byes": 0,
+        "legbyes": 0,
+        "penalty": 0,
+        "player_out_1": "",
+        "kind_1": "",
+        "player_out_2": "",
+        "kind_2": "",
+    }
+    wicket_ball.get_ball_data()
+    assert wicket_ball.ball_data == {
+        "batter": "N Hussain",
+        "non_striker": "JP Crawley",
+        "runs": 0,
+        "batter_runs": 0,
+        "extras": 0,
+        "bowler": "SCG MacGill",
+        "wides": 0,
+        "noballs": 0,
+        "byes": 0,
+        "legbyes": 0,
+        "penalty": 0,
+        "player_out_1": "N Hussain",
+        "kind_1": "caught",
+        "player_out_2": "",
+        "kind_2": "",
+    }
+    wide_ball.get_ball_data()
+    assert wide_ball.ball_data == {
+        "batter": "MP Vaughan",
+        "non_striker": "RWT Key",
+        "runs": 1,
+        "batter_runs": 0,
+        "extras": 1,
+        "bowler": "B Lee",
+        "wides": 1,
+        "noballs": 0,
+        "byes": 0,
+        "legbyes": 0,
+        "penalty": 0,
+        "player_out_1": "",
+        "kind_1": "",
+        "player_out_2": "",
+        "kind_2": "",
+    }
+    no_ball.get_ball_data()
+    assert no_ball.ball_data == {
+        "batter": "ML Hayden",
+        "non_striker": "JL Langer",
+        "runs": 1,
+        "batter_runs": 0,
+        "extras": 1,
+        "bowler": "C White",
+        "wides": 0,
+        "noballs": 1,
+        "byes": 0,
+        "legbyes": 0,
+        "penalty": 0,
+        "player_out_1": "",
+        "kind_1": "",
+        "player_out_2": "",
+        "kind_2": "",
+    }
+    leg_bye.get_ball_data()
+    assert leg_bye.ball_data == {
+        "batter": "ML Hayden",
+        "non_striker": "JL Langer",
+        "runs": 1,
+        "batter_runs": 0,
+        "extras": 1,
+        "bowler": "AR Caddick",
+        "wides": 0,
+        "noballs": 0,
+        "byes": 0,
+        "legbyes": 1,
+        "penalty": 0,
+        "player_out_1": "",
+        "kind_1": "",
+        "player_out_2": "",
+        "kind_2": "",
+    }
+    bye.get_ball_data()
+    assert bye.ball_data == {
+        "batter": "ME Trescothick",
+        "non_striker": "MA Butcher",
+        "runs": 2,
+        "batter_runs": 0,
+        "extras": 2,
+        "bowler": "SCG MacGill",
+        "wides": 0,
+        "noballs": 0,
+        "byes": 2,
+        "legbyes": 0,
+        "penalty": 0,
+        "player_out_1": "",
+        "kind_1": "",
+        "player_out_2": "",
+        "kind_2": "",
+    }
+    penalty.get_ball_data()
+    assert penalty.ball_data == {
+        "batter": "Habibul Bashar",
+        "non_striker": "Hannan Sarkar",
+        "runs": 5,
+        "batter_runs": 0,
+        "extras": 5,
+        "bowler": "MJ Hoggard",
+        "wides": 0,
+        "noballs": 0,
+        "byes": 0,
+        "legbyes": 0,
+        "penalty": 5,
+        "player_out_1": "",
+        "kind_1": "",
+        "player_out_2": "",
+        "kind_2": "",
+    }

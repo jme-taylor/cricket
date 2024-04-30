@@ -1,7 +1,5 @@
 from typing import Dict
 
-import polars as pl
-
 
 class Ball:
     """
@@ -46,30 +44,33 @@ class Ball:
 
     def get_extras(self) -> Dict:
         """Get the specific extras from the delivery, if they exist"""
-        extras_types = ["wides", "noballs", "byes", "legbyes", "penalty"]
+        EXTRAS_TYPES = ["wides", "noballs", "byes", "legbyes", "penalty"]
         return {
             extra: self.raw_data.get("extras", {}).get(extra, 0)
-            for extra in extras_types
+            for extra in EXTRAS_TYPES
         }
 
     def get_wickets(self) -> Dict:
         wicket_data = {}
         wickets = self.raw_data.get("wickets", [])
-        for i in [0, 1]:
+        for wicket_number in [0, 1]:
             try:
-                wicket_data[f"player_out_{i + 1}"] = wickets[i]["player_out"]
-                wicket_data[f"kind_{i + 1}"] = wickets[i]["kind"]
+                wicket_data[f"player_out_{wicket_number + 1}"] = wickets[
+                    wicket_number
+                ]["player_out"]
+                wicket_data[f"kind_{wicket_number + 1}"] = wickets[
+                    wicket_number
+                ]["kind"]
             except IndexError:
-                wicket_data[f"player_out_{i + 1}"] = ""
-                wicket_data[f"kind_{i + 1}"] = ""
+                wicket_data[f"player_out_{wicket_number + 1}"] = ""
+                wicket_data[f"kind_{wicket_number + 1}"] = ""
         return wicket_data
 
-    def get_ball_data(self) -> pl.DataFrame:
+    def get_ball_data(self) -> Dict:
         """Combine all the parsed data into a single dictionary, and return it."""
-        # initialise  polars df - then fill it with the stuff that comes back
         self.ball_data.update(self.get_batter())
         self.ball_data.update(self.get_runs())
         self.ball_data.update(self.get_bowler())
         self.ball_data.update(self.get_extras())
         self.ball_data.update(self.get_wickets())
-        return pl.from_dict(self.ball_data)
+        return self.ball_data
