@@ -1,6 +1,7 @@
 # get rid of massive input + output data folder
 input_data/
 data/
+data/match_metadata.parquet
 
 # personal to-do lists
 todo.txt
