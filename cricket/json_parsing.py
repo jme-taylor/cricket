@@ -47,7 +47,7 @@ class JsonDataProcessor:
         for match_file in all_matches:
             match = Match(match_file, match_file.stem)
             matches.extend(match.parse_match_data())
-            match_metadata.extend(match.get_match_metadata())
+            match_metadata.append(match.get_match_metadata())
             count_parsed += 1
             if count_parsed % 100 == 0:
                 logger.info(f"Parsed {count_parsed} matches")

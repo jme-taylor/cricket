@@ -1,2 +1,0 @@
-match_id,match_type,city,venue,balls_per_over,gender,start_date,end_date,team_1,team_2,toss_winner,toss_decision
-64012,Test,Melbourne,Melbourne Cricket Ground,6,male,2002-12-26,2002-12-30,Australia,England,Australia,bat
