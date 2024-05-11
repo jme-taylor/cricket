@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from cricket.over_processing import Over
+from cricket.extraction.over_processing import Over
 
 TEST_DATA_DIR = Path(__file__).parent.joinpath("test_over_processing")
 

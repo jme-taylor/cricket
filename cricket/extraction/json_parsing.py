@@ -1,8 +1,8 @@
 import polars as pl
 
 from cricket.constants import DATA_FOLDER, INPUT_DATA_FOLDER
+from cricket.extraction.match_processing import Match
 from cricket.logging_config import logger
-from cricket.match_processing import Match
 
 
 class JsonDataProcessor:

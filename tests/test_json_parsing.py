@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from cricket.json_parsing import JsonDataProcessor
+from cricket.extraction.json_parsing import JsonDataProcessor
 
 TEST_DATA_FOLDER = Path(__file__).parent.joinpath("test_json_parsing")
 TEST_DATA_INPUT_FOLDER = TEST_DATA_FOLDER.joinpath("test_input")

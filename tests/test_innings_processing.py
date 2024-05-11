@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from cricket.innings_processing import Innings
+from cricket.extraction.innings_processing import Innings
 
 TEST_DATA_DIR = Path(__file__).parent.joinpath("test_innings_processing")
 

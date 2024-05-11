@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from cricket.ball_processing import Ball
+from cricket.extraction.ball_processing import Ball
 
 
 class Over:

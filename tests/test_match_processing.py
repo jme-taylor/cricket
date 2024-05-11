@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from cricket.match_processing import Match
+from cricket.extraction.match_processing import Match
 
 TEST_DATA_DIR = Path(__file__).parent.joinpath("test_match_processing")
 

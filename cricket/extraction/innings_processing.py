@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from cricket.over_processing import Over
+from cricket.extraction.over_processing import Over
 
 
 class Innings:
