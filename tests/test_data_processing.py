@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from cricket.data_processing import load_json
+from cricket.extraction.data_processing import load_json
 
 TEST_JSON_DATA = {"key": "value"}
 

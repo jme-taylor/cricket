@@ -1,6 +1,6 @@
 import pytest
 
-from cricket.ball_processing import Ball
+from cricket.extraction.ball_processing import Ball
 
 
 # Define fixtures for different ball scenarios
