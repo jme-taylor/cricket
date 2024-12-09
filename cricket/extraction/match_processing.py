@@ -4,6 +4,24 @@ from typing import Dict, List, Optional, Tuple
 from cricket.extraction.data_processing import load_json
 from cricket.extraction.innings_processing import Innings
 
+def lookup_player(player_name: str, player_registry: Dict) -> Optional[str]:
+    """
+    Lookup a player name against the matches player registry to return a player ID.
+    If no match is found, the return value will be None.
+
+    Parameters
+    ----------
+    player_name : str
+        The player name to lookup against the player registry.
+    player_registry : Dict
+        A dictionary containing player names as keys and player IDs as values.
+
+    Returns
+    -------
+    Optional[str]
+        String with player ID if there is a match, None if there is no match.
+    """
+    return player_registry.get(player_name, None)
 
 class Match:
     """
@@ -17,23 +35,6 @@ class Match:
         self.match_data = load_json(self.match_filepath)
         self.match_id = match_id
         self.player_registry = self.match_data["info"]["registry"]["people"]
-
-    def lookup_player(self, player_name: str) -> Optional[str]:
-        """
-        Lookup a player name against the matches player registry to return a player ID.
-        If no match is found, the return value will be None.
-
-        Parameters
-        ----------
-        player_name : str
-            The player name to lookup against the player registry.
-
-        Returns
-        -------
-        Optional[str]
-            String with player ID if there is a match, None if there is no match.
-        """
-        return self.player_registry.get(player_name, None)
 
     def get_match_dates(self) -> Tuple:
         dates = self.match_data.get("info", {}).get("dates", None)
@@ -126,7 +127,7 @@ class Match:
             innings_data.extend(innings.parse_innings_data())
         for ball in innings_data:
             ball["match_id"] = self.match_id
-            ball["batter_id"] = self.lookup_player(ball["batter"])
-            ball["non_striker_id"] = self.lookup_player(ball["non_striker"])
-            ball["bowler_id"] = self.lookup_player(ball["bowler"])
+            ball["batter_id"] = lookup_player(ball["batter"])
+            ball["non_striker_id"] = lookup_player(ball["non_striker"])
+            ball["bowler_id"] = lookup_player(ball["bowler"])
         return innings_data

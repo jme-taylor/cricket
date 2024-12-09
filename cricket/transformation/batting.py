@@ -1,7 +1,5 @@
 import polars as pl
 
-from cricket.transformation.utils import get_all_matches_data
-
 
 def get_batter_outs(dataframe: pl.DataFrame) -> pl.DataFrame:
     return (
@@ -70,13 +68,32 @@ def join_all_batter_data(dataframe: pl.DataFrame) -> pl.DataFrame:
         batter_scores.join(
             batter_balls_faced, on=["batter_id", "match_id", "innings_number"]
         )
-        .join(batter_outs, on=["batter_id", "match_id", "innings_number"])
-        .join(fours, on=["batter_id", "match_id", "innings_number"])
-        .join(sixes, on=["batter_id", "match_id", "innings_number"])
+        .join(
+            batter_outs,
+            on=["batter_id", "match_id", "innings_number"],
+            how="left",
+        )
+        .join(
+            fours, on=["batter_id", "match_id", "innings_number"], how="left"
+        )
+        .join(
+            sixes, on=["batter_id", "match_id", "innings_number"], how="left"
+        )
     )
 
 
-def get_batter_data(match_type: str) -> pl.DataFrame:
+def fill_missing_batter_data(dataframe: pl.DataFrame) -> pl.DataFrame:
+    return dataframe.with_columns(
+        [
+            pl.col("out").fill_null(False),
+            pl.col("how_out").fill_null("not out"),
+            pl.col("fours").fill_null(0),
+            pl.col("sixes").fill_null(0),
+        ]
+    )
+
+
+def get_batter_data(dataframe: pl.DataFrame) -> pl.DataFrame:
     RETURN_COLUMNS = [
         "batter_id",
         "match_id",
@@ -88,8 +105,8 @@ def get_batter_data(match_type: str) -> pl.DataFrame:
         "fours",
         "sixes",
     ]
-    all_match_data = get_all_matches_data(match_type)
-    batter_data = join_all_batter_data(all_match_data)
+    batter_data = join_all_batter_data(dataframe)
+    batter_data = fill_missing_batter_data(batter_data)
     return batter_data.select(RETURN_COLUMNS)
 
 
