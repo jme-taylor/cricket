@@ -6,20 +6,25 @@ from cricket.extraction.over_processing import Over, OverData
 
 class PowerplayData(BaseModel):
     """Powerplay period data"""
+
     model_config = ConfigDict(populate_by_name=True)
-    
-    from_: float = Field(None, alias="from")  # Using from_ because 'from' is a Python keyword
+
+    from_: float = Field(
+        None, alias="from"
+    )  # Using from_ because 'from' is a Python keyword
     to: float
 
 
 class TargetData(BaseModel):
     """Target data for the innings"""
+
     runs: int
     overs: float
 
 
 class InningsData(BaseModel):
     """Raw innings data from JSON"""
+
     team: str
     overs: List[Dict]
     powerplays: Optional[List[Dict]] = None
@@ -32,6 +37,7 @@ class Innings(BaseModel):
 
     Uses computed fields to handle team data and methods for powerplay/target checks.
     """
+
     raw_data: InningsData
     innings_num: int
 
@@ -43,12 +49,12 @@ class Innings(BaseModel):
         if raw_data is not None and not isinstance(raw_data, InningsData):
             # Convert dict to InningsData for backward compatibility
             raw_data = InningsData(**raw_data)
-        
+
         if raw_data is not None:
-            kwargs['raw_data'] = raw_data
+            kwargs["raw_data"] = raw_data
         if innings_num is not None:
-            kwargs['innings_num'] = innings_num
-            
+            kwargs["innings_num"] = innings_num
+
         super().__init__(**kwargs)
 
     @computed_field

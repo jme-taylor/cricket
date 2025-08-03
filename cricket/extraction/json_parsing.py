@@ -10,7 +10,7 @@ class JsonDataProcessor:
     """
     Parse all matches in a folder into parquet files using Pydantic validation.
 
-    Takes a folder of JSON files containing data about cricket matches and parses them 
+    Takes a folder of JSON files containing data about cricket matches and parses them
     using validated Pydantic models for better type safety and data validation.
 
     Attributes
@@ -47,20 +47,16 @@ class JsonDataProcessor:
         all_matches = list(self.data_folder.glob("*.json"))
         logger.info(f"Found {len(all_matches)} matches")
         count_parsed = 0
-        
+
         for match_file in all_matches:
-            match = Match(
-                match_filepath=match_file,
-                match_id=match_file.stem
-            )
-            
+            match = Match(match_filepath=match_file, match_id=match_file.stem)
+
             matches.extend(match.parse_match_data())
             match_metadata.append(match.get_match_metadata())
             count_parsed += 1
-            
+
             if count_parsed % 100 == 0:
                 logger.info(f"Parsed {count_parsed} matches")
-                    
 
         if not self.output_folder.exists():
             self.output_folder.mkdir(parents=True)
@@ -75,7 +71,9 @@ class JsonDataProcessor:
             match_metadata_dataframe.write_parquet(
                 self.output_folder.joinpath(self.match_metadata_filename)
             )
-            
-            logger.info(f"Successfully processed {len(matches)} balls from {count_parsed} matches")
+
+            logger.info(
+                f"Successfully processed {len(matches)} balls from {count_parsed} matches"
+            )
         else:
             logger.warning("No matches were successfully processed")

@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import TypeVar, Type
 from pydantic import BaseModel
 
-T = TypeVar('T', bound=BaseModel)
+T = TypeVar("T", bound=BaseModel)
 
 
 def load_json(filepath: Path) -> dict:

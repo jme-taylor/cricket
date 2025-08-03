@@ -3,6 +3,7 @@ from pydantic import BaseModel, computed_field
 
 class BallData(BaseModel):
     """Raw ball data from JSON"""
+
     batter: str
     non_striker: str
     bowler: str
@@ -14,9 +15,10 @@ class BallData(BaseModel):
 class Ball(BaseModel):
     """
     Parse data about a single delivery in a cricket match using Pydantic validation.
-    
+
     Uses computed fields to derive additional data like runs breakdown and wicket information.
     """
+
     raw_data: BallData
     over_num: int | None = None
     ball_num: int | None = None
@@ -30,10 +32,10 @@ class Ball(BaseModel):
         """
         if raw_data is not None and not isinstance(raw_data, BallData):
             raw_data = BallData(**raw_data)
-        
+
         if raw_data is not None:
-            kwargs['raw_data'] = raw_data
-            
+            kwargs["raw_data"] = raw_data
+
         super().__init__(**kwargs)
 
     @computed_field

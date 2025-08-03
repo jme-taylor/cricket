@@ -6,6 +6,7 @@ from cricket.extraction.ball_processing import Ball, BallData
 
 class OverData(BaseModel):
     """Raw over data from JSON"""
+
     over: int
     deliveries: List[Dict]
 
@@ -16,6 +17,7 @@ class Over(BaseModel):
 
     Uses computed fields to process deliveries into Ball instances with proper numbering.
     """
+
     raw_data: OverData
 
     def __init__(self, raw_data=None, **kwargs):
@@ -26,10 +28,10 @@ class Over(BaseModel):
         if raw_data is not None and not isinstance(raw_data, OverData):
             # Convert dict to OverData for backward compatibility
             raw_data = OverData(**raw_data)
-        
+
         if raw_data is not None:
-            kwargs['raw_data'] = raw_data
-            
+            kwargs["raw_data"] = raw_data
+
         super().__init__(**kwargs)
 
     @computed_field
@@ -56,7 +58,7 @@ class Over(BaseModel):
         ball_num = 1
         ball_num_including_extras = 1
         over_data = []
-        
+
         for delivery in self.deliveries:
             ball_data = BallData(**delivery)
             ball = Ball(
@@ -64,11 +66,11 @@ class Over(BaseModel):
                 over_num=self.over_num,
                 ball_num=ball_num,
                 ball_num_including_extras=ball_num_including_extras,
-                delivery=float(f"{self.over_num}.{ball_num}")
+                delivery=float(f"{self.over_num}.{ball_num}"),
             )
-            
+
             ball_dict = ball.get_ball_data()
-            
+
             # Check if this delivery had wides or no balls
             if ball.wides > 0 or ball.noballs > 0:
                 over_data.append(ball_dict)
@@ -76,5 +78,5 @@ class Over(BaseModel):
                 over_data.append(ball_dict)
                 ball_num += 1
             ball_num_including_extras += 1
-            
+
         return over_data

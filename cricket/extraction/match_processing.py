@@ -9,12 +9,14 @@ from cricket.extraction.innings_processing import Innings, InningsData
 
 class TossData(BaseModel):
     """Toss information"""
+
     winner: Optional[str] = None
     decision: Optional[str] = None
 
 
 class MatchInfo(BaseModel):
     """Match information from JSON"""
+
     match_type: Optional[str] = None
     city: Optional[str] = None
     venue: Optional[str] = None
@@ -28,6 +30,7 @@ class MatchInfo(BaseModel):
 
 class MatchData(BaseModel):
     """Complete match data from JSON"""
+
     info: MatchInfo
     innings: List[Dict]
 
@@ -35,9 +38,10 @@ class MatchData(BaseModel):
 class Match(BaseModel):
     """
     Process a full match file into ball by ball data using Pydantic validation.
-    
+
     Uses computed fields for derived data and validation for match processing.
     """
+
     match_filepath: Path
     match_id: Union[str, int]
     raw_data: Optional[MatchData] = None
@@ -48,10 +52,14 @@ class Match(BaseModel):
         Maintains backward compatibility with existing API.
         """
         if match_filepath is not None:
-            kwargs['match_filepath'] = Path(match_filepath) if not isinstance(match_filepath, Path) else match_filepath
+            kwargs["match_filepath"] = (
+                Path(match_filepath)
+                if not isinstance(match_filepath, Path)
+                else match_filepath
+            )
         if match_id is not None:
-            kwargs['match_id'] = match_id
-            
+            kwargs["match_id"] = match_id
+
         super().__init__(**kwargs)
 
     def model_post_init(self, __context) -> None:
@@ -68,11 +76,16 @@ class Match(BaseModel):
 
     @computed_field
     @property
-    def match_dates(self) -> Tuple[Optional[datetime.datetime], Optional[datetime.datetime]]:
+    def match_dates(
+        self,
+    ) -> Tuple[Optional[datetime.datetime], Optional[datetime.datetime]]:
         """Start and end dates of the match"""
         if not self.raw_data.info.dates:
             return None, None
-        dates_parsed = [datetime.datetime.strptime(date, "%Y-%m-%d") for date in self.raw_data.info.dates]
+        dates_parsed = [
+            datetime.datetime.strptime(date, "%Y-%m-%d")
+            for date in self.raw_data.info.dates
+        ]
         return min(dates_parsed), max(dates_parsed)
 
     @computed_field
