@@ -26,9 +26,7 @@ def test_parse_all_matches():
 
 def test_parse_all_matches_no_matches():
     # Test when there are no matches to parse
-    json_data_processor = JsonDataProcessor(
-        data_folder=Path("nonexistent_folder")
-    )
+    json_data_processor = JsonDataProcessor(data_folder=Path("nonexistent_folder"))
     json_data_processor.parse_all_matches()
 
     ball_by_ball_filepath = json_data_processor.data_folder.joinpath(

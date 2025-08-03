@@ -23,7 +23,7 @@ def get_batter_outs(dataframe: pl.DataFrame) -> pl.DataFrame:
             .over("match_id")
             .alias("how_out")
         )
-        .filter(pl.col("out") == True)
+        .filter(pl.col("out") == True)  # noqa: E712
     )
 
 
@@ -58,9 +58,7 @@ def get_sixes(dataframe: pl.DataFrame) -> pl.DataFrame:
 
 
 def join_all_batter_data(dataframe: pl.DataFrame) -> pl.DataFrame:
-    type_data_sorted = dataframe.sort(
-        ["start_date", "innings_number", "delivery"]
-    )
+    type_data_sorted = dataframe.sort(["start_date", "innings_number", "delivery"])
     batter_outs = get_batter_outs(type_data_sorted)
     batter_scores = get_batter_scores(type_data_sorted)
     batter_balls_faced = get_batter_balls_faced(type_data_sorted)
@@ -117,8 +115,7 @@ def get_batter_arrival(dataframe: pl.DataFrame) -> pl.DataFrame:
     )
     batter_arrival = batter_arrival.with_columns(
         pl.when(
-            pl.col("earliest_non_striker_delivery")
-            < pl.col("earliest_batter_delivery")
+            pl.col("earliest_non_striker_delivery") < pl.col("earliest_batter_delivery")
         )
         .then(pl.col("earliest_non_striker_delivery"))
         .otherwise(pl.col("earliest_batter_delivery"))

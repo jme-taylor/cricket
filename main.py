@@ -1,4 +1,4 @@
-from cricket.extraction.json_parsing import JsonDataProcessor   
+from cricket.extraction.json_parsing import JsonDataProcessor
 from cricket.extraction.download import download_and_extract_zipped_cricket_data
 
 if __name__ == "__main__":
