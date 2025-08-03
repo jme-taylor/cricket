@@ -26,8 +26,6 @@ And then activate the virtual environment using:
 poetry shell
 ```
 
-To run the current script, firstly download the (JSON) data from [cricsheet](https://cricsheet.org/matches/) and extract the zipped data into a folder named `input_data`.
-
 ```bash
 python main.py
 ```
