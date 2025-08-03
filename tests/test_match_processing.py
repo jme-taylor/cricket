@@ -26,16 +26,12 @@ def test_t20_match():
 
 @pytest.fixture
 def test_hundred_match():
-    return Match(
-        TEST_DATA_DIR.joinpath("hundred_match_input.json"), match_id=4
-    )
+    return Match(TEST_DATA_DIR.joinpath("hundred_match_input.json"), match_id=4)
 
 
 @pytest.fixture
 def test_forfeitted_match():
-    return Match(
-        TEST_DATA_DIR.joinpath("innings_forfeit_match_input.json"), match_id=5
-    )
+    return Match(TEST_DATA_DIR.joinpath("innings_forfeit_match_input.json"), match_id=5)
 
 
 def test_lookup_player(test_test_match):
@@ -137,7 +133,5 @@ def test_parse_match_data(
         assert test_t20_match.parse_match_data() == json.load(f)
     with open(TEST_DATA_DIR.joinpath("hundred_match_output.json")) as f:
         assert test_hundred_match.parse_match_data() == json.load(f)
-    with open(
-        TEST_DATA_DIR.joinpath("innings_forfeit_match_output.json")
-    ) as f:
+    with open(TEST_DATA_DIR.joinpath("innings_forfeit_match_output.json")) as f:
         assert test_forfeitted_match.parse_match_data() == json.load(f)

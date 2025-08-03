@@ -16,9 +16,7 @@ def test_innings():
 
 @pytest.fixture
 def test_innings_with_powerplay():
-    with open(
-        TEST_DATA_DIR.joinpath("innings_with_powerplay_input.json")
-    ) as f:
+    with open(TEST_DATA_DIR.joinpath("innings_with_powerplay_input.json")) as f:
         return Innings(json.load(f), 1)
 
 
@@ -67,9 +65,7 @@ def test_parse_innings_data(
 ):
     with open(TEST_DATA_DIR.joinpath("innings_output.json")) as f:
         assert test_innings.parse_innings_data() == json.load(f)
-    with open(
-        TEST_DATA_DIR.joinpath("innings_with_powerplay_output.json")
-    ) as f:
+    with open(TEST_DATA_DIR.joinpath("innings_with_powerplay_output.json")) as f:
         assert test_innings_with_powerplay.parse_innings_data() == json.load(f)
     with open(TEST_DATA_DIR.joinpath("innings_with_target_output.json")) as f:
         assert test_innings_with_target.parse_innings_data() == json.load(f)

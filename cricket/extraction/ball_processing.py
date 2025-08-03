@@ -55,12 +55,12 @@ class Ball:
         wickets = self.raw_data.get("wickets", [])
         for wicket_number in [0, 1]:
             try:
-                wicket_data[f"player_out_{wicket_number + 1}"] = wickets[
-                    wicket_number
-                ]["player_out"]
-                wicket_data[f"kind_{wicket_number + 1}"] = wickets[
-                    wicket_number
-                ]["kind"]
+                wicket_data[f"player_out_{wicket_number + 1}"] = wickets[wicket_number][
+                    "player_out"
+                ]
+                wicket_data[f"kind_{wicket_number + 1}"] = wickets[wicket_number][
+                    "kind"
+                ]
             except IndexError:
                 wicket_data[f"player_out_{wicket_number + 1}"] = ""
                 wicket_data[f"kind_{wicket_number + 1}"] = ""
