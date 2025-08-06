@@ -13,6 +13,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "ipykernel>=6.30.1",
     "matplotlib>=3.10.5",
     "pyarrow>=21.0.0",
     "pytest>=8.4.1",
@@ -20,3 +21,10 @@ dev = [
     "seaborn>=0.13.2",
     "ty>=0.0.1a16",
 ]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["cricket"]
