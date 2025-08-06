@@ -3,6 +3,9 @@ input_data/
 data/*
 data/match_metadata.parquet
 
+# claude code markdown planning
+features/
+
 # personal to-do lists
 todo.txt
 notes.txt

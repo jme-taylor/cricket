@@ -49,7 +49,7 @@ def download_file(url: str, destination: Path, chunk_size: int = 8192) -> None:
 
 
 def extract_zip(
-    zip_path: Path, extract_to: Path = DATA_FOLDER, remove_zip: bool = True
+    zip_path: Path, extract_to: Path = INPUT_DATA_FOLDER, remove_zip: bool = True
 ) -> None:
     """
     Extract a zip file to a destination directory.
@@ -59,7 +59,7 @@ def extract_zip(
     zip_path : Path
         Path to the zip file
     extract_to : Path, optional
-        Directory to extract files to, by default DATA_FOLDER
+        Directory to extract files to, by default INPUT_DATA_FOLDER
     remove_zip : bool, optional
         Whether to remove the zip file after extraction, by default True
     """
