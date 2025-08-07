@@ -1,13 +1,3 @@
-"""
-Model evaluation and visualization for T20 cricket linear regression.
-
-This module provides:
-- Comprehensive model evaluation metrics
-- Visualization of model performance
-- Feature importance analysis
-- Model diagnostics and validation
-"""
-
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
@@ -18,7 +8,6 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-# Set plotting style
 plt.style.use("seaborn-v0_8")
 sns.set_palette("husl")
 
