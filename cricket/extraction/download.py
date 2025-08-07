@@ -5,7 +5,7 @@ import requests
 import zipfile
 from pathlib import Path
 
-from ..constants import RAW_DATA_URL, INPUT_DATA_FOLDER, DATA_FOLDER
+from ..constants import RAW_DATA_URL, INPUT_DATA_FOLDER
 
 logger = logging.getLogger(__name__)
 

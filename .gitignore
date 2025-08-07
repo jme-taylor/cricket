@@ -5,6 +5,11 @@ data/match_metadata.parquet
 
 # claude code markdown planning
 features/
+CLAUDE.md
+
+# mlflow
+mlruns/*
+notebooks/mlruns/*
 
 # personal to-do lists
 todo.txt
