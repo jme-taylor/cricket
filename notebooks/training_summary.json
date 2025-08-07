@@ -1,0 +1,10 @@
+{
+  "model_name": "t20_runs_predictor",
+  "experiment_name": "male_team_level_t20",
+  "test_r2": 0.4489075123777506,
+  "test_rmse": 22.504774599423886,
+  "test_mae": 16.90019455529959,
+  "model_equation": "total_runs = 152.378 + 54.827 * current_score - 7.002 * wickets_fallen + 42.301 * overs_remaining",
+  "training_samples": 1507252,
+  "test_samples": 322983
+}

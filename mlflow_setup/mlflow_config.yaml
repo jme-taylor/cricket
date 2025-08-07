@@ -1,0 +1,96 @@
+# MLflow Configuration for T20 Cricket Linear Regression
+# This file contains configuration settings for the MLflow setup
+
+mlflow:
+  # Tracking server configuration
+  tracking:
+    backend_store_uri: "sqlite:///mlflow.db"
+    default_artifact_root: "./mlruns"
+    host: "127.0.0.1"
+    port: 5000
+    serve_artifacts: true
+  
+  # Model registry configuration
+  model_registry:
+    enabled: true
+    backend: "sqlite"
+    
+  # Experiment configuration
+  experiments:
+    t20_regression:
+      name: "male_team_level_t20"
+      description: "T20/IT20 male cricket total runs prediction using linear regression"
+      tags:
+        model_type: "linear_regression"
+        sport: "cricket"
+        format: "T20"
+        gender: "male"
+        target: "total_runs_innings"
+
+# Model configuration
+models:
+  t20_runs_predictor:
+    name: "t20_runs_predictor"
+    description: "Linear regression model for predicting T20 innings total runs"
+    tags:
+      model_family: "linear_regression"
+      use_case: "runs_prediction"
+      features: "current_score,wickets_fallen,overs_remaining"
+    
+    # Model stages
+    stages:
+      - "None"        # Initial registration
+      - "Staging"     # Under evaluation
+      - "Production"  # Deployed model
+      - "Archived"    # Deprecated model
+
+# Logging configuration
+logging:
+  metrics:
+    - "r2_score"
+    - "rmse" 
+    - "mae"
+    - "mape"
+  
+  parameters:
+    - "model_type"
+    - "n_features"
+    - "n_training_samples"
+    - "feature_scaling"
+    - "train_test_split"
+    - "sample_points"
+    - "match_formats"
+    - "gender_filter"
+  
+  artifacts:
+    - "model"                    # Trained model
+    - "feature_importance.png"   # Feature importance plot
+    - "predictions_vs_actual.png" # Scatter plot
+    - "residuals.png"           # Residual plot
+    - "training_data_summary.json" # Data statistics
+
+# Data configuration
+data:
+  filters:
+    match_types: ["T20", "IT20"]
+    gender: "male"
+    min_balls_per_innings: 60  # Minimum 10 overs
+    
+  features:
+    input_features:
+      - "current_score"
+      - "wickets_fallen"
+      - "overs_remaining"
+    
+    target_variable: "total_runs_innings"
+    
+    sampling_points:
+      - 5.0   # After 5 overs
+      - 10.0  # After 10 overs 
+      - 15.0  # After 15 overs
+  
+  splitting:
+    strategy: "chronological"
+    train_ratio: 0.7
+    validation_ratio: 0.15
+    test_ratio: 0.15

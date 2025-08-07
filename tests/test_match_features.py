@@ -317,18 +317,18 @@ class TestIntegration:
     def test_full_match_final_ball_england_innings(self, match_1072317_full):
         """Test final ball of England innings shows correct match state"""
         input_df = match_1072317_full
-        
+
         # Apply all features
         result = get_current_score(input_df)
         result = get_wickets_fallen(result)
         result = get_overs_remaining(result)
-        
+
         # Filter to England innings (innings 1)
         england_innings = result.filter(pl.col("innings_number") == 1)
-        
+
         # Get the last ball of England's innings
         final_ball = england_innings.tail(1)
-        
+
         # Verify the match state for the final ball of England's innings
         assert final_ball["current_score"][0] == 149, (
             f"Final ball should show 149 runs, got {final_ball['current_score'][0]}"

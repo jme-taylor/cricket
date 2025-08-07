@@ -5,6 +5,7 @@ data/match_metadata.parquet
 
 # claude code markdown planning
 features/
+CLAUDE.md
 
 # personal to-do lists
 todo.txt
