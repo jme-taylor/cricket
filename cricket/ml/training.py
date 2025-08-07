@@ -24,8 +24,6 @@ class T20TrainingPipeline:
         self,
         data_path: str,
         mlflow_tracking_uri: Optional[str] = None,
-        use_all_balls: bool = True,
-        sample_overs: list = None,
         scaling_method: str = "standard",
     ):
         """
@@ -37,19 +35,13 @@ class T20TrainingPipeline:
             Path to cricket data parquet file
         mlflow_tracking_uri : Optional[str]
             MLflow tracking URI, defaults to local SQLite
-        use_all_balls : bool
-            If True, use all balls for training. If False, use sample_overs.
-        sample_overs : list
-            Deprecated: Over marks for feature sampling (only used if use_all_balls=False)
         scaling_method : str
             Feature scaling method
         """
         self.data_path = Path(data_path)
-        self.use_all_balls = use_all_balls
-        self.sample_overs = sample_overs if not use_all_balls else None
 
         # Initialize components
-        self.preparator = T20DataPreparator(sample_overs=self.sample_overs)
+        self.preparator = T20DataPreparator()
         self.feature_engineer = FeatureEngineer(scaling_method=scaling_method)
         self.model = T20LinearRegression()
 
@@ -192,32 +184,21 @@ class T20TrainingPipeline:
         self, df: pl.DataFrame
     ) -> tuple[pl.DataFrame, pl.DataFrame]:
         """Create target variable and prepare features."""
-        if self.use_all_balls:
-            # Use all balls as training data
-            modeling_data = self.preparator.prepare_all_balls_data(df)
-            
-            # Split into features and create a dummy target_df for compatibility
-            # The modeling_data already has targets joined
-            target_df = (
-                modeling_data.select(["match_id", "innings_number", "total_runs_innings", "team", "match_type", "gender"])
-                .unique(["match_id", "innings_number"])
-            )
-            
-            logger.info(
-                f"Created {len(modeling_data)} ball-level training samples from {len(target_df)} innings"
-            )
-            
-            return target_df, modeling_data
-        else:
-            # Original implementation: sample at specific overs
-            target_df = self.preparator.create_target_variable(df)
-            feature_samples = self.preparator.sample_features_at_overs(df)
-            
-            logger.info(
-                f"Created {len(target_df)} target samples and {len(feature_samples)} feature samples"
-            )
-            
-            return target_df, feature_samples
+        # Use all balls as training data
+        modeling_data = self.preparator.prepare_all_balls_data(df)
+        
+        # Split into features and create a dummy target_df for compatibility
+        # The modeling_data already has targets joined
+        target_df = (
+            modeling_data.select(["match_id", "innings_number", "total_runs_innings", "team", "match_type", "gender"])
+            .unique(["match_id", "innings_number"])
+        )
+        
+        logger.info(
+            f"Created {len(modeling_data)} ball-level training samples from {len(target_df)} innings"
+        )
+        
+        return target_df, modeling_data
 
     def _split_data(
         self,
@@ -228,8 +209,7 @@ class T20TrainingPipeline:
         test_ratio: float,
     ) -> tuple[pl.DataFrame, pl.DataFrame, pl.DataFrame]:
         """Split data chronologically."""
-        # For all-balls mode, we only need to split the feature_samples
-        # as they already contain the targets
+        # Split the feature_samples as they already contain the targets
         train_features, val_features, test_features = (
             self.preparator.split_data_chronologically(
                 feature_samples, train_ratio, val_ratio, test_ratio
@@ -276,11 +256,11 @@ class T20TrainingPipeline:
         self, features_df: pl.DataFrame, target_df: pl.DataFrame
     ) -> pl.DataFrame:
         """Join features with targets to ensure alignment."""
-        # If using all balls, features already have targets
-        if self.use_all_balls and "total_runs_innings" in features_df.columns:
+        # Features already have targets when using all balls
+        if "total_runs_innings" in features_df.columns:
             return features_df
             
-        # Otherwise, join features with targets on match_id and innings_number
+        # Fallback: join features with targets on match_id and innings_number
         joined = features_df.join(
             target_df.select(["match_id", "innings_number", "total_runs_innings"]),
             on=["match_id", "innings_number"],
@@ -316,8 +296,7 @@ class T20TrainingPipeline:
         with mlflow.start_run(nested=True):
             mlflow.log_params(
                 {
-                    "pipeline_use_all_balls": self.use_all_balls,
-                    "pipeline_sample_overs": str(self.sample_overs) if self.sample_overs else "all_balls",
+                    "pipeline_training_mode": "all_balls",
                     "pipeline_scaling_method": self.feature_engineer.scaling_method,
                     "pipeline_data_path": str(self.data_path),
                 }
@@ -359,8 +338,7 @@ class T20TrainingPipeline:
                 "test_samples": n_test,
             },
             "pipeline_config": {
-                "use_all_balls": self.use_all_balls,
-                "sample_overs": self.sample_overs if self.sample_overs else "all_balls",
+                "training_mode": "all_balls",
                 "scaling_method": self.feature_engineer.scaling_method,
                 "data_path": str(self.data_path),
             },
@@ -384,7 +362,7 @@ class T20TrainingPipeline:
         logger.info(f"Model saved to: {filepath}")
 
 
-def quick_train_t20_model(data_path: str, mlflow_uri: Optional[str] = None, use_all_balls: bool = True) -> dict:
+def quick_train_t20_model(data_path: str, mlflow_uri: Optional[str] = None) -> dict:
     """
     Quick training function with default parameters.
 
@@ -402,7 +380,7 @@ def quick_train_t20_model(data_path: str, mlflow_uri: Optional[str] = None, use_
     """
     logger.info("Starting quick T20 model training")
 
-    pipeline = T20TrainingPipeline(data_path=data_path, mlflow_tracking_uri=mlflow_uri, use_all_balls=use_all_balls)
+    pipeline = T20TrainingPipeline(data_path=data_path, mlflow_tracking_uri=mlflow_uri)
 
     results = pipeline.run_training()
 

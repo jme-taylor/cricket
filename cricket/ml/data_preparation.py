@@ -8,16 +8,10 @@ logger = logging.getLogger(__name__)
 class T20DataPreparator:
     """Prepare T20/IT20 data for linear regression modeling."""
 
-    def __init__(self, sample_overs: list[float] | None = None):
+    def __init__(self):
         """
-        Initialize data preparator.
-
-        Parameters
-        ----------
-        sample_overs : List[float] | None
-            Deprecated: Over marks for sampling. If None, uses all balls.
+        Initialize data preparator for all-balls training.
         """
-        self.sample_overs = sample_overs  # Kept for backwards compatibility
         # Only require columns needed for filtering - match state features will be added later
         self.required_columns = [
             "match_id",
@@ -133,60 +127,6 @@ class T20DataPreparator:
 
         return target_df
 
-    def sample_features_at_overs(self, df: pl.DataFrame) -> pl.DataFrame:
-        """
-        Deprecated: Sample features at specified over marks.
-        Use prepare_all_balls_data() instead for better model training.
-
-        Parameters
-        ----------
-        df : pl.DataFrame
-            Ball-by-ball data with features calculated
-
-        Returns
-        -------
-        pl.DataFrame
-            Feature samples at specified over marks
-        """
-        if self.sample_overs is None:
-            logger.warning("sample_features_at_overs called but sample_overs is None. Use prepare_all_balls_data instead.")
-            return pl.DataFrame()
-            
-        logger.info(f"Sampling features at overs: {self.sample_overs}")
-
-        sampled_data = []
-
-        for over_mark in self.sample_overs:
-            # Find the last ball of the specified over
-            over_samples = (
-                df.filter(
-                    (pl.col("delivery") >= over_mark)
-                    & (pl.col("delivery") < over_mark + 1.0)
-                )
-                .group_by(["match_id", "innings_number"])
-                .agg(
-                    [
-                        pl.col("current_score").last(),
-                        pl.col("wickets_fallen").last(),
-                        pl.col("overs_remaining").last(),
-                        pl.col("team").first(),
-                        pl.col("match_type").first(),
-                        pl.col("gender").first(),
-                    ]
-                )
-                .with_columns(pl.lit(over_mark).alias("sample_over"))
-            )
-
-            sampled_data.append(over_samples)
-
-        # Combine all samples
-        if sampled_data:
-            combined_samples = pl.concat(sampled_data)
-            logger.info(f"Created {len(combined_samples)} feature samples")
-            return combined_samples
-        else:
-            logger.warning("No feature samples created")
-            return pl.DataFrame()
     
     def prepare_all_balls_data(self, df: pl.DataFrame) -> pl.DataFrame:
         """
