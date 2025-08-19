@@ -46,7 +46,12 @@ class Match(BaseModel):
     match_id: Union[str, int]
     raw_data: Optional[MatchData] = None
 
-    def __init__(self, match_filepath=None, match_id=None, **kwargs):
+    def __init__(
+        self,
+        match_filepath: str | Path | None = None,
+        match_id: str | int | None = None,
+        **kwargs,
+    ):
         """
         Initialize Match with file path and match ID.
         Maintains backward compatibility with existing API.
@@ -66,7 +71,7 @@ class Match(BaseModel):
         """Load and validate match data after model initialization"""
         if self.raw_data is None:
             json_data = load_json(self.match_filepath)
-            self.raw_data = MatchData(**json_data)
+            self.raw_data = MatchData(**json_data)  # ty: ignore
 
     @computed_field
     @property
@@ -166,7 +171,7 @@ class Match(BaseModel):
             if innings_raw.get("forfeited", False):
                 continue
 
-            innings_data_model = InningsData(**innings_raw)
+            innings_data_model = InningsData(**innings_raw)  # ty: ignore
             innings = Innings(
                 raw_data=innings_data_model,
                 innings_num=innings_num + 1,

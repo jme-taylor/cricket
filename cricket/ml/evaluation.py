@@ -109,7 +109,7 @@ class T20ModelEvaluator:
 
             # Handle inf/nan values
             if np.isfinite(mape):
-                return mape
+                return float(mape)
             else:
                 return 0.0
 

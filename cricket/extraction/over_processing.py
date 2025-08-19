@@ -20,14 +20,14 @@ class Over(BaseModel):
 
     raw_data: OverData
 
-    def __init__(self, raw_data=None, **kwargs):
+    def __init__(self, raw_data: dict | OverData | None = None, **kwargs):
         """
         Initialize Over with either dictionary or OverData.
         Maintains backward compatibility with existing API.
         """
         if raw_data is not None and not isinstance(raw_data, OverData):
             # Convert dict to OverData for backward compatibility
-            raw_data = OverData(**raw_data)
+            raw_data = OverData(**raw_data)  # ty: ignore
 
         if raw_data is not None:
             kwargs["raw_data"] = raw_data
@@ -60,7 +60,7 @@ class Over(BaseModel):
         over_data = []
 
         for delivery in self.deliveries:
-            ball_data = BallData(**delivery)
+            ball_data = BallData(**delivery)  # ty: ignore
             ball = Ball(
                 raw_data=ball_data,
                 over_num=self.over_num,

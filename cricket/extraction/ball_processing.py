@@ -25,13 +25,13 @@ class Ball(BaseModel):
     ball_num_including_extras: int | None = None
     delivery: float | None = None
 
-    def __init__(self, raw_data: dict | None = None, **kwargs):
+    def __init__(self, raw_data: dict | BallData | None = None, **kwargs):
         """
         Initialize Ball with either dictionary or BallData.
         Maintains backward compatibility with existing API.
         """
         if raw_data is not None and not isinstance(raw_data, BallData):
-            raw_data = BallData(**raw_data)
+            raw_data = BallData(**raw_data)  # ty: ignore
 
         if raw_data is not None:
             kwargs["raw_data"] = raw_data

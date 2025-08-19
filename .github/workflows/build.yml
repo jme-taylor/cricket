@@ -26,7 +26,7 @@ jobs:
         run: uv run ruff check .
 
       - name: Run formatter
-        run: uv run ruff format . --check
+        run: uv run poe format-check
 
       - name: Run type checker
         run: uv run ty check

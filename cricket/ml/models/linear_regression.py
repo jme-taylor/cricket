@@ -407,4 +407,4 @@ def predict_innings_total(
     # Make prediction
     prediction = model.predict(features)[0]
 
-    return round(prediction, 1)
+    return round(prediction, 1)  # ty: ignore
