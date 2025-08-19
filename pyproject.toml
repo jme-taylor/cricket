@@ -18,6 +18,7 @@ dependencies = [
 dev = [
     "ipykernel>=6.30.1",
     "matplotlib>=3.10.5",
+    "poethepoet>=0.29.0",
     "pyarrow>=21.0.0",
     "pytest>=8.4.1",
     "ruff>=0.12.7",
@@ -31,3 +32,22 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = ["cricket"]
+
+[tool.poe.tasks]
+# MLflow management tasks
+mlflow-start = { shell = "cd mlflow_setup && ./start_mlflow.sh", help = "Start MLflow tracking server" }
+mlflow-stop = { shell = "cd mlflow_setup && ./stop_mlflow.sh", help = "Stop MLflow tracking server" }
+mlflow-restart = { shell = "cd mlflow_setup && ./restart_mlflow.sh", help = "Restart MLflow tracking server" }
+mlflow-status = { shell = "cd mlflow_setup && ./status_mlflow.sh", help = "Check MLflow server status" }
+
+# Development tasks
+lint = { shell = "ruff check .", help = "Run linting checks" }
+format = { shell = "ruff format .", help = "Format code with ruff" }
+typecheck = { shell = "ty check", help = "Run type checking" }
+test = { shell = "pytest", help = "Run tests" }
+
+# Data processing tasks  
+process-data = { shell = "python main.py", help = "Run main data processing pipeline" }
+
+# Combined development workflow
+check = ["lint", "typecheck", "test"]

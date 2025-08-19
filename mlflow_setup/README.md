@@ -1,6 +1,6 @@
 # MLflow Setup for T20 Cricket Analysis
 
-This directory contains the MLflow configuration and setup files for the T20 linear regression model project.
+This directory contains the MLflow configuration and setup files for the T20 linear regression model project, with enhanced automation for process management and zombie cleanup.
 
 ## Directory Structure
 
@@ -8,17 +8,25 @@ This directory contains the MLflow configuration and setup files for the T20 lin
 mlflow_setup/
 ├── README.md                 # This file
 ├── mlflow_config.yaml       # Configuration settings
-├── start_mlflow.sh          # Server startup script
+├── start_mlflow.sh          # Enhanced server startup script
+├── stop_mlflow.sh           # Server shutdown script  
+├── restart_mlflow.sh        # Server restart script
+├── status_mlflow.sh         # Server status check script
 ├── mlflow.db               # SQLite database (created on first run)
+├── mlflow.pid              # Process ID file (created when running)
+├── logs/                   # Server logs directory
+│   └── mlflow.log          # Server log file
 ├── mlruns/                 # Experiment artifacts
 └── models/                 # Model registry artifacts
 ```
 
 ## Quick Start
 
-### 1. Install MLflow
+### 1. Prerequisites
+Ensure MLflow is installed in your virtual environment:
 ```bash
-pip install mlflow
+# From the main project directory
+uv sync --locked --dev
 ```
 
 ### 2. Start MLflow Server
@@ -27,8 +35,35 @@ cd mlflow_setup
 ./start_mlflow.sh
 ```
 
+The startup script will automatically:
+- Kill any zombie MLflow processes
+- Check port availability (uses port 5001 to avoid macOS conflicts)
+- Activate the virtual environment
+- Start the server with proper logging
+- Verify the server is responding
+
 ### 3. Access MLflow UI
-Open your browser and navigate to: http://127.0.0.1:5000
+Open your browser and navigate to: **http://127.0.0.1:5001**
+
+## Management Commands
+
+The enhanced management system provides these scripts:
+
+### Server Control
+```bash
+./start_mlflow.sh    # Start server (with automatic cleanup)
+./stop_mlflow.sh     # Gracefully stop server
+./restart_mlflow.sh  # Stop and restart server
+./status_mlflow.sh   # Check server status and health
+```
+
+### Status Information
+The status script provides comprehensive information:
+- Process status and PID
+- Port availability 
+- UI accessibility test
+- Database statistics (experiments/runs count)
+- Recent log entries
 
 ## Configuration
 
@@ -104,30 +139,64 @@ model = mlflow.sklearn.load_model("models:/t20_runs_predictor/Production")
 
 ## Troubleshooting
 
-### Common Issues
+### Automated Problem Resolution
+The enhanced scripts automatically handle common issues:
 
-1. **Port Already in Use**
+**Zombie Processes**: Automatically detected and killed during startup
+**Port Conflicts**: Changed from port 5000 to 5001 to avoid macOS conflicts
+**Virtual Environment**: Automatically activated if available
+**Health Checks**: Server status verified before reporting success
+
+### Manual Troubleshooting
+
+1. **Check Server Status**
    ```bash
-   # Kill existing MLflow processes
-   lsof -ti:5000 | xargs kill -9
+   ./status_mlflow.sh
+   ```
+   This provides comprehensive diagnostics including:
+   - Process status and health
+   - Port usage
+   - Database connectivity
+   - UI accessibility
+
+2. **View Server Logs**
+   ```bash
+   tail -f logs/mlflow.log
    ```
 
-2. **Database Locked**
+3. **Force Stop All Processes**
    ```bash
-   # Check for existing connections
-   ps aux | grep mlflow
+   ./stop_mlflow.sh
+   # If processes persist:
+   pkill -9 -f "mlflow"
    ```
 
-3. **Permission Issues**
+4. **Database Issues**
    ```bash
-   # Ensure script is executable
-   chmod +x start_mlflow.sh
+   # Check database integrity
+   sqlite3 mlflow.db ".schema"
+   ```
+
+5. **Permission Issues**
+   ```bash
+   # Make scripts executable (should be done automatically)
+   chmod +x *.sh
    ```
 
 ### Logs and Debugging
-- MLflow server logs are printed to console
-- Database file: `mlflow.db`
-- Artifacts stored in: `mlruns/`
+- **Server logs**: `logs/mlflow.log` (rotated automatically)
+- **Process tracking**: `mlflow.pid` file
+- **Database file**: `mlflow.db`
+- **Artifacts**: `mlruns/` directory
+- **Configuration**: `mlflow_config.yaml`
+
+### Known Issues and Solutions
+
+**Port 5000 Conflicts**: macOS ControlCenter uses port 5000. Scripts now use port 5001.
+
+**Zombie Processes**: Previous MLflow instances can persist. The start script automatically cleans these up.
+
+**Virtual Environment**: Scripts require the project's virtual environment. They automatically activate it if found at `../venv/`.
 
 ## Security Notes
 
