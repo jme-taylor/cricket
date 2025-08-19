@@ -74,7 +74,7 @@ def join_all_batter_data(dataframe: pl.DataFrame) -> pl.DataFrame:
     )
 
 
-def get_batter_data(match_type: str) -> pl.DataFrame:
+def get_batter_data() -> pl.DataFrame:
     RETURN_COLUMNS = [
         "batter_id",
         "match_id",
@@ -86,7 +86,7 @@ def get_batter_data(match_type: str) -> pl.DataFrame:
         "fours",
         "sixes",
     ]
-    all_match_data = get_all_matches_data(match_type)
+    all_match_data = get_all_matches_data()
     batter_data = join_all_batter_data(all_match_data)
     return batter_data.select(RETURN_COLUMNS)
 

@@ -53,7 +53,7 @@ class Innings(BaseModel):
         """
         if raw_data is not None and not isinstance(raw_data, InningsData):
             # Convert dict to InningsData for backward compatibility
-            raw_data = InningsData(**raw_data)
+            raw_data = InningsData(**raw_data) # ty: ignore
 
         if raw_data is not None:
             kwargs["raw_data"] = raw_data
@@ -74,7 +74,7 @@ class Innings(BaseModel):
         """List of powerplay periods"""
         if not self.raw_data.powerplays:
             return []
-        return [PowerplayData(**pp) for pp in self.raw_data.powerplays]
+        return [PowerplayData(**pp) for pp in self.raw_data.powerplays] # ty: ignore
 
     @computed_field
     @property
@@ -82,7 +82,7 @@ class Innings(BaseModel):
         """Target for the innings if it exists"""
         if not self.raw_data.target:
             return None
-        return TargetData(**self.raw_data.target)
+        return TargetData(**self.raw_data.target) # ty: ignore
 
     def power_play_check(self, ball: Dict) -> None:
         """
@@ -129,7 +129,7 @@ class Innings(BaseModel):
         """
         innings_data = []
         for over_data in self.raw_data.overs:
-            over_data_model = OverData(**over_data)
+            over_data_model = OverData(**over_data) # ty: ignore
             over = Over(raw_data=over_data_model)
             innings_data.extend(over.parse_over_data())
 

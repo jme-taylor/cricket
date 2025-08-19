@@ -31,7 +31,7 @@ class Ball(BaseModel):
         Maintains backward compatibility with existing API.
         """
         if raw_data is not None and not isinstance(raw_data, BallData):
-            raw_data = BallData(**raw_data)
+            raw_data = BallData(**raw_data) # ty: ignore
 
         if raw_data is not None:
             kwargs["raw_data"] = raw_data
