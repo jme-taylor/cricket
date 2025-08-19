@@ -71,7 +71,7 @@ class Match(BaseModel):
         """Load and validate match data after model initialization"""
         if self.raw_data is None:
             json_data = load_json(self.match_filepath)
-            self.raw_data = MatchData(**json_data) # ty: ignore
+            self.raw_data = MatchData(**json_data)  # ty: ignore
 
     @computed_field
     @property
@@ -171,7 +171,7 @@ class Match(BaseModel):
             if innings_raw.get("forfeited", False):
                 continue
 
-            innings_data_model = InningsData(**innings_raw) # ty: ignore
+            innings_data_model = InningsData(**innings_raw)  # ty: ignore
             innings = Innings(
                 raw_data=innings_data_model,
                 innings_num=innings_num + 1,
