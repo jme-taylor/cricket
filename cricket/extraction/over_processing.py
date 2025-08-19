@@ -20,7 +20,7 @@ class Over(BaseModel):
 
     raw_data: OverData
 
-    def __init__(self, raw_data=None, **kwargs):
+    def __init__(self, raw_data: dict | OverData | None = None, **kwargs):
         """
         Initialize Over with either dictionary or OverData.
         Maintains backward compatibility with existing API.

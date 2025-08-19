@@ -127,7 +127,6 @@ class T20DataPreparator:
 
         return target_df
 
-    
     def prepare_all_balls_data(self, df: pl.DataFrame) -> pl.DataFrame:
         """
         Prepare all balls as training samples with their innings totals.
@@ -144,10 +143,10 @@ class T20DataPreparator:
             All balls with innings totals joined as targets
         """
         logger.info("Preparing all balls as training data")
-        
+
         # Validate match state features are present
         self.validate_match_state_features(df)
-        
+
         # Create innings totals
         innings_totals = df.group_by(["match_id", "innings_number"]).agg(
             [
@@ -158,21 +157,23 @@ class T20DataPreparator:
                 pl.col("gender").first(),
             ]
         )
-        
+
         # Filter for complete innings (minimum 60 balls = 10 overs)
         complete_innings = innings_totals.filter(pl.col("balls_faced") >= 60)
-        
+
         logger.info(
             f"Found {len(complete_innings)} complete innings out of {len(innings_totals)} total"
         )
-        
+
         # Join back to ball data to get all balls with their innings totals
         balls_with_targets = df.join(
-            complete_innings.select(["match_id", "innings_number", "total_runs_innings"]),
+            complete_innings.select(
+                ["match_id", "innings_number", "total_runs_innings"]
+            ),
             on=["match_id", "innings_number"],
-            how="inner"
+            how="inner",
         )
-        
+
         # Select relevant columns for modeling
         modeling_data = balls_with_targets.select(
             [
@@ -188,14 +189,14 @@ class T20DataPreparator:
                 "total_runs_innings",
             ]
         )
-        
+
         logger.info(
             f"Created {len(modeling_data)} ball-level training samples from {len(complete_innings)} complete innings"
         )
         logger.info(
             f"Average samples per innings: {len(modeling_data) / len(complete_innings):.1f}"
         )
-        
+
         return modeling_data
 
     def validate_data_quality(self, df: pl.DataFrame) -> dict:

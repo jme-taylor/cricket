@@ -46,7 +46,12 @@ class Match(BaseModel):
     match_id: Union[str, int]
     raw_data: Optional[MatchData] = None
 
-    def __init__(self, match_filepath=None, match_id=None, **kwargs):
+    def __init__(
+        self,
+        match_filepath: str | Path | None = None,
+        match_id: str | int | None = None,
+        **kwargs,
+    ):
         """
         Initialize Match with file path and match ID.
         Maintains backward compatibility with existing API.

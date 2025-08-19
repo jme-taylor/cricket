@@ -9,7 +9,7 @@ class PowerplayData(BaseModel):
 
     model_config = ConfigDict(populate_by_name=True)
 
-    from_: float = Field(
+    from_: float | None = Field(
         None, alias="from"
     )  # Using from_ because 'from' is a Python keyword
     to: float
@@ -41,7 +41,12 @@ class Innings(BaseModel):
     raw_data: InningsData
     innings_num: int
 
-    def __init__(self, raw_data=None, innings_num=None, **kwargs):
+    def __init__(
+        self,
+        raw_data: dict | InningsData | None = None,
+        innings_num: int | None = None,
+        **kwargs,
+    ):
         """
         Initialize Innings with either dictionary or InningsData.
         Maintains backward compatibility with existing API.

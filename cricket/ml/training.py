@@ -186,18 +186,24 @@ class T20TrainingPipeline:
         """Create target variable and prepare features."""
         # Use all balls as training data
         modeling_data = self.preparator.prepare_all_balls_data(df)
-        
+
         # Split into features and create a dummy target_df for compatibility
         # The modeling_data already has targets joined
-        target_df = (
-            modeling_data.select(["match_id", "innings_number", "total_runs_innings", "team", "match_type", "gender"])
-            .unique(["match_id", "innings_number"])
-        )
-        
+        target_df = modeling_data.select(
+            [
+                "match_id",
+                "innings_number",
+                "total_runs_innings",
+                "team",
+                "match_type",
+                "gender",
+            ]
+        ).unique(["match_id", "innings_number"])
+
         logger.info(
             f"Created {len(modeling_data)} ball-level training samples from {len(target_df)} innings"
         )
-        
+
         return target_df, modeling_data
 
     def _split_data(
@@ -259,7 +265,7 @@ class T20TrainingPipeline:
         # Features already have targets when using all balls
         if "total_runs_innings" in features_df.columns:
             return features_df
-            
+
         # Fallback: join features with targets on match_id and innings_number
         joined = features_df.join(
             target_df.select(["match_id", "innings_number", "total_runs_innings"]),

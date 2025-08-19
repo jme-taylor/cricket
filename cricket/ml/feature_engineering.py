@@ -114,7 +114,7 @@ class FeatureEngineer:
         base_columns = ["match_id", "innings_number"]
         if "sample_over" in df.columns:
             base_columns.append("sample_over")
-            
+
         feature_df = df.select(base_columns + self.feature_columns)
 
         # Handle missing values

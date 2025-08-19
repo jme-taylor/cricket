@@ -25,7 +25,7 @@ class Ball(BaseModel):
     ball_num_including_extras: int | None = None
     delivery: float | None = None
 
-    def __init__(self, raw_data: dict | None = None, **kwargs):
+    def __init__(self, raw_data: dict | BallData | None = None, **kwargs):
         """
         Initialize Ball with either dictionary or BallData.
         Maintains backward compatibility with existing API.

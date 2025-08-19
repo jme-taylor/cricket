@@ -43,6 +43,7 @@ mlflow-status = { shell = "cd mlflow_setup && ./status_mlflow.sh", help = "Check
 # Development tasks
 lint = { shell = "ruff check .", help = "Run linting checks" }
 format = { shell = "ruff format .", help = "Format code with ruff" }
+format-check = { shell = "ruff format . --check", help = "Check code formatting" }
 typecheck = { shell = "ty check", help = "Run type checking" }
 test = { shell = "pytest", help = "Run tests" }
 
@@ -51,3 +52,6 @@ process-data = { shell = "python main.py", help = "Run main data processing pipe
 
 # Combined development workflow
 check = ["lint", "typecheck", "test"]
+
+[tool.ruff]
+exclude = ["notebooks/"]
