@@ -11,6 +11,11 @@ CLAUDE.md
 mlruns/*
 notebooks/mlruns/*
 
+# mlflow logs
+mlflow_setup/logs/
+mlflow_setup/mlruns/
+mlflow_setup/models/
+
 # personal to-do lists
 todo.txt
 notes.txt
