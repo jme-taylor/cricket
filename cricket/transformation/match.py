@@ -176,3 +176,104 @@ def get_overs_remaining(dataframe: pl.DataFrame) -> pl.DataFrame:
     return df.drop(
         ["total_overs_available", "innings_overs", "legal_delivery", "balls_bowled"]
     )
+
+
+def get_balls_remaining(dataframe: pl.DataFrame) -> pl.DataFrame:
+    """
+    Calculate balls remaining in the innings at each ball.
+    Converts overs_remaining to balls (overs * 6).
+
+    Parameters
+    ----------
+    dataframe : pl.DataFrame
+        Ball-by-ball data with 'overs_remaining' column
+
+    Returns
+    -------
+    pl.DataFrame
+        Input dataframe with additional 'balls_remaining' column
+    """
+    return dataframe.with_columns(
+        (pl.col("overs_remaining") * 6.0).alias("balls_remaining")
+    )
+
+
+def get_current_run_rate(dataframe: pl.DataFrame) -> pl.DataFrame:
+    """
+    Calculate current run rate (runs per over) at each ball.
+    Rate calculated from runs scored before current ball and balls faced.
+
+    Parameters
+    ----------
+    dataframe : pl.DataFrame
+        Ball-by-ball data with 'current_score' and 'overs_remaining' columns
+
+    Returns
+    -------
+    pl.DataFrame
+        Input dataframe with additional 'current_run_rate' column
+    """
+    # Calculate overs completed (20 - overs_remaining for T20)
+    df = dataframe.with_columns(
+        pl.when(pl.col("match_type").is_in(["T20", "IT20"]))
+        .then(20.0 - pl.col("overs_remaining"))
+        .when(pl.col("match_type").is_in(["ODI", "ODM"]))
+        .then(50.0 - pl.col("overs_remaining"))
+        .otherwise(20.0 - pl.col("overs_remaining"))  # Default T20
+        .alias("overs_completed")
+    )
+
+    # Calculate run rate (avoid division by zero)
+    df = df.with_columns(
+        pl.when(pl.col("overs_completed") > 0)
+        .then(pl.col("current_score") / pl.col("overs_completed"))
+        .otherwise(0.0)
+        .alias("current_run_rate")
+    )
+
+    return df.drop("overs_completed")
+
+
+def get_required_run_rate(dataframe: pl.DataFrame) -> pl.DataFrame:
+    """
+    Calculate required run rate for second innings (chasing team).
+    Set to NULL for first innings.
+
+    Parameters
+    ----------
+    dataframe : pl.DataFrame
+        Ball-by-ball data with match state columns
+
+    Returns
+    -------
+    pl.DataFrame
+        Input dataframe with additional 'required_run_rate' column
+    """
+    # For now, set to NULL for all innings
+    # TODO: Implement target calculation for second innings
+    return dataframe.with_columns(
+        pl.when(pl.col("innings_number") == 2)
+        .then(None)  # Will calculate later when target data available
+        .otherwise(None)
+        .alias("required_run_rate")
+    )
+
+
+def get_innings_indicator(dataframe: pl.DataFrame) -> pl.DataFrame:
+    """
+    Create binary indicator for first innings.
+    1 = first innings, 0 = second innings.
+
+    Parameters
+    ----------
+    dataframe : pl.DataFrame
+        Ball-by-ball data with 'innings_number' column
+
+    Returns
+    -------
+    pl.DataFrame
+        Input dataframe with additional 'is_first_innings' column
+    """
+    return dataframe.with_columns(
+        (pl.col("innings_number") == 1).cast(pl.Int32).alias("is_first_innings")
+    )

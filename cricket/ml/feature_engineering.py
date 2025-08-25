@@ -38,8 +38,11 @@ class FeatureEngineer:
         self.scaling_method = scaling_method
         self.feature_columns = feature_columns or [
             "current_score",
-            "wickets_fallen",
-            "overs_remaining",
+            "wickets_fallen", 
+            "balls_remaining",
+            "current_run_rate",
+            "required_run_rate",
+            "is_first_innings"
         ]
 
         # Initialize scaler based on method
@@ -138,7 +141,10 @@ class FeatureEngineer:
         fill_values = {
             "current_score": 0,  # No runs scored
             "wickets_fallen": 0,  # No wickets fallen
-            "overs_remaining": 0,  # No overs remaining (match over)
+            "balls_remaining": 0,  # No balls remaining (match over)
+            "current_run_rate": 0.0,  # No run rate at start
+            "required_run_rate": None,  # Keep as null for first innings
+            "is_first_innings": 1  # Default to first innings
         }
 
         for col in self.feature_columns:
