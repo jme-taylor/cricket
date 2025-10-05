@@ -1,7 +1,7 @@
 """
 Simplified training pipeline for men's T20 cricket ML models.
 
-This module provides a streamlined approach to training both runs and wicket 
+This module provides a streamlined approach to training both runs and wicket
 prediction models with proper MLflow tracking and data preparation.
 """
 
@@ -55,7 +55,7 @@ class MensT20TrainingPipeline:
         # Initialize components
         self.preparator = T20DataPreparator()
         self.feature_engineer = FeatureEngineer(scaling_method=scaling_method)
-        
+
         # Models will be created during training
         self.runs_model = None
         self.wicket_model = None
@@ -130,7 +130,7 @@ class MensT20TrainingPipeline:
                 runs_results = self._train_runs_model(model_inputs)
                 results["runs_model"] = runs_results
 
-            # 5. Train wicket model  
+            # 5. Train wicket model
             if train_wicket_model:
                 logger.info("Step 4b: Training wicket prediction model")
                 wicket_results = self._train_wicket_model(model_inputs)
@@ -158,8 +158,8 @@ class MensT20TrainingPipeline:
         # Filter for men's T20/IT20 matches only
         filters = MODEL_CONFIG["data_filters"]
         data = raw_data.filter(
-            (pl.col("gender") == filters["gender"]) &
-            (pl.col("match_type").is_in(filters["match_types"]))
+            (pl.col("gender") == filters["gender"])
+            & (pl.col("match_type").is_in(filters["match_types"]))
         )
         logger.info(f"Filtered to {len(data)} rows for men's T20/IT20")
 
@@ -173,7 +173,7 @@ class MensT20TrainingPipeline:
         data = get_wickets_fallen(data)
         data = get_overs_remaining(data)
         data = get_balls_remaining(data)
-        data = get_current_run_rate(data) 
+        data = get_current_run_rate(data)
         data = get_required_run_rate(data)
         data = get_innings_indicator(data)
 
@@ -191,7 +191,7 @@ class MensT20TrainingPipeline:
         self,
         data: pl.DataFrame,
         train_ratio: float,
-        val_ratio: float, 
+        val_ratio: float,
         test_ratio: float,
     ) -> Tuple[pl.DataFrame, pl.DataFrame, pl.DataFrame]:
         """Split data chronologically."""
@@ -210,7 +210,7 @@ class MensT20TrainingPipeline:
 
         # Prepare features
         train_features = self.feature_engineer.prepare_features(train_data)
-        val_features = self.feature_engineer.prepare_features(val_data) 
+        val_features = self.feature_engineer.prepare_features(val_data)
         test_features = self.feature_engineer.prepare_features(test_data)
 
         # Scale features
@@ -226,7 +226,7 @@ class MensT20TrainingPipeline:
         # Extract targets for wicket model (wicket on current ball)
         # Create wicket indicator: 1 if wicket falls on this ball, 0 otherwise
         y_wicket_train = self._create_wicket_targets(train_data)
-        y_wicket_val = self._create_wicket_targets(val_data) 
+        y_wicket_val = self._create_wicket_targets(val_data)
         y_wicket_test = self._create_wicket_targets(test_data)
 
         logger.info(
@@ -248,11 +248,17 @@ class MensT20TrainingPipeline:
     def _create_wicket_targets(self, data: pl.DataFrame) -> np.ndarray:
         """Create binary targets for wicket prediction."""
         # Check if a wicket falls on the current ball
-        wicket_targets = data.with_columns(
-            ((pl.col("player_out_1") != "") | 
-             (pl.col("player_out_2") != "")).cast(pl.Int32).alias("wicket_this_ball")
-        ).select("wicket_this_ball").to_numpy().flatten()
-        
+        wicket_targets = (
+            data.with_columns(
+                ((pl.col("player_out_1") != "") | (pl.col("player_out_2") != ""))
+                .cast(pl.Int32)
+                .alias("wicket_this_ball")
+            )
+            .select("wicket_this_ball")
+            .to_numpy()
+            .flatten()
+        )
+
         return wicket_targets
 
     def _train_runs_model(self, model_inputs: Dict[str, np.ndarray]) -> Dict[str, Any]:
@@ -284,10 +290,14 @@ class MensT20TrainingPipeline:
             "training_metadata": trained_model.get_training_metadata(),
         }
 
-        logger.info(f"Runs model training complete. Test R²: {test_metrics['test_r2']:.3f}")
+        logger.info(
+            f"Runs model training complete. Test R²: {test_metrics['test_r2']:.3f}"
+        )
         return results
 
-    def _train_wicket_model(self, model_inputs: Dict[str, np.ndarray]) -> Dict[str, Any]:
+    def _train_wicket_model(
+        self, model_inputs: Dict[str, np.ndarray]
+    ) -> Dict[str, Any]:
         """Train the wicket prediction model."""
         logger.info("Training wicket prediction model")
 
@@ -315,7 +325,9 @@ class MensT20TrainingPipeline:
             "training_metadata": trained_model.get_training_metadata(),
         }
 
-        logger.info(f"Wicket model training complete. Test accuracy: {test_metrics['test_accuracy']:.3f}")
+        logger.info(
+            f"Wicket model training complete. Test accuracy: {test_metrics['test_accuracy']:.3f}"
+        )
         return results
 
     def get_results(self) -> Dict[str, Any]:
@@ -327,9 +339,7 @@ class MensT20TrainingPipeline:
 
 
 def quick_train_models(
-    data_path: str, 
-    mlflow_uri: Optional[str] = None,
-    train_both: bool = True
+    data_path: str, mlflow_uri: Optional[str] = None, train_both: bool = True
 ) -> Dict[str, Any]:
     """
     Quick training function with default parameters.
@@ -351,27 +361,27 @@ def quick_train_models(
     logger.info("Starting quick men's T20 model training")
 
     pipeline = MensT20TrainingPipeline(
-        data_path=data_path, 
-        mlflow_tracking_uri=mlflow_uri
+        data_path=data_path, mlflow_tracking_uri=mlflow_uri
     )
 
     results = pipeline.run_training(
-        train_runs_model=True,
-        train_wicket_model=train_both
+        train_runs_model=True, train_wicket_model=train_both
     )
 
     # Print results summary
     print("\n=== Men's T20 Model Training Complete ===")
-    
+
     if "runs_model" in results:
         runs_metrics = results["runs_model"]["test_metrics"]
-        print(f"Runs Model - Test R²: {runs_metrics['test_r2']:.3f}, RMSE: {runs_metrics['test_rmse']:.1f}")
+        print(
+            f"Runs Model - Test R²: {runs_metrics['test_r2']:.3f}, RMSE: {runs_metrics['test_rmse']:.1f}"
+        )
         print(f"Runs Model Equation: {results['runs_model']['model_equation']}")
-    
+
     if "wicket_model" in results:
         wicket_metrics = results["wicket_model"]["test_metrics"]
         print(f"Wicket Model - Test Accuracy: {wicket_metrics['test_accuracy']:.3f}")
-        if 'test_auc' in wicket_metrics:
+        if "test_auc" in wicket_metrics:
             print(f"Wicket Model - Test AUC: {wicket_metrics['test_auc']:.3f}")
 
     return results
