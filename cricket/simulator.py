@@ -2,6 +2,7 @@ import random
 
 from cricket.logging_config import logger
 
+
 class MatchSimulator:
     def __init__(self, seed: int | None = None):
         self.current_score = 0
